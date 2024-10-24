@@ -1,0 +1,5 @@
+{
+  "rules": [
+    "[is_tag(waystones:waystones), is_not_state(origin, player)] refuse($chat.waystones.cannot_break_waystone)"
+  ]
+}
