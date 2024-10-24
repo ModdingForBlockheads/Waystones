@@ -62,6 +62,7 @@
   "chat.waystones.waystone_to_waystone_disabled": "You touch the waystone, but nothing happens.",
   "chat.waystones.warp_plate_has_no_target": "This warp plate is not bound to another warp plate yet.",
   "chat.waystones.warp_plate_has_invalid_target": "The shard inside this warp plate has lost its attunement.",
+  "chat.waystones.cannot_break_waystone": "You cannot break this waystone.",
   "tooltip.waystones.cooldown_left": "Cooldown: %d seconds",
   "tooltip.waystones.bound_to": "Bound to: %s",
   "tooltip.waystones.bound_to_none": "None",
