@@ -1,12 +1,11 @@
 package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.block.ModBlocks;
-import net.blay09.mods.waystones.block.WarpPlateBlock;
-import net.blay09.mods.waystones.block.WaystoneBlockBase;
+import net.blay09.mods.waystones.block.*;
 import net.blay09.mods.waystones.item.ModItems;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
@@ -14,13 +13,10 @@ import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.blockstates.Variant;
 import net.minecraft.client.data.models.blockstates.VariantProperties;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-
-import java.util.Optional;
 
 import static net.minecraft.client.data.models.BlockModelGenerators.createHorizontalFacingDispatch;
 
@@ -40,6 +36,7 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(WarpPlateBlock.WarpPlateStatus.WARPING_INVALID, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate")))
                         .select(WarpPlateBlock.WarpPlateStatus.LOCKED, Variant.variant().with(VariantProperties.MODEL, ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/warp_plate_locked")))
                 ));
+        blockStateModelGenerator.registerSimpleTintedItemModel(ModBlocks.warpPlate, ModelLocationUtils.getModelLocation(ModBlocks.warpPlate.asItem()), new Constant(0xffc456bd));
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.waystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.sandyWaystone);
         createDoubleBlockWaystone(blockStateModelGenerator, ModBlocks.mossyWaystone);
@@ -66,16 +63,6 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.returnScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.blankScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
-
-        final var sharestoneTemplate = new ModelTemplate(Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", "item/sharestone")), Optional.empty());
-        for (final var sharestone : ModBlocks.sharestones) {
-            itemModelGenerator.generateFlatItem(sharestone.asItem(), sharestoneTemplate);
-        }
-
-        final var portstoneTemplate = new ModelTemplate(Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", "item/portstone")), Optional.empty());
-        for (final var portstone : ModBlocks.portstones) {
-            itemModelGenerator.generateFlatItem(portstone.asItem(), portstoneTemplate);
-        }
     }
 
     private void createDoubleBlockWaystone(BlockModelGenerators blockStateModelGenerator, Block block) {
@@ -94,7 +81,7 @@ public class ModModelProvider extends FabricModelProvider {
         blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));
     }
 
-    private void createSharestone(BlockModelGenerators blockStateModelGenerator, Block block) {
+    private void createSharestone(BlockModelGenerators blockStateModelGenerator, SharestoneBlock block) {
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/sharestone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
@@ -103,10 +90,10 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
         blockStateModelGenerator.blockStateOutput.accept(generator);
-        blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));
+        blockStateModelGenerator.registerSimpleTintedItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()), new Constant(block.getColor().getTextColor()));
     }
 
-    private void createPortstone(BlockModelGenerators blockStateModelGenerator, Block block) {
+    private void createPortstone(BlockModelGenerators blockStateModelGenerator, PortstoneBlock block) {
         final var topModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_top");
         final var bottomModelLocation = ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, "block/portstone_bottom");
         final var generator = MultiVariantGenerator.multiVariant(block)
@@ -115,7 +102,11 @@ public class ModModelProvider extends FabricModelProvider {
                         .select(DoubleBlockHalf.LOWER, Variant.variant().with(VariantProperties.MODEL, bottomModelLocation))
                         .select(DoubleBlockHalf.UPPER, Variant.variant().with(VariantProperties.MODEL, topModelLocation)));
         blockStateModelGenerator.blockStateOutput.accept(generator);
-        blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));
+        if(block.getColor() != null) {
+            blockStateModelGenerator.registerSimpleTintedItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()), new Constant(block.getColor().getTextColor()));
+        } else {
+            blockStateModelGenerator.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block.asItem()));
+        }
     }
 
 }

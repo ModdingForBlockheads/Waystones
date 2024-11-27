@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "waystones:item/red_sharestone",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -65536
+      }
+    ]
+  }
+}

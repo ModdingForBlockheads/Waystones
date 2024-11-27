@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "waystones:item/lime_portstone",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -4194560
+      }
+    ]
+  }
+}

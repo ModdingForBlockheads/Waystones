@@ -50,10 +50,9 @@ public class SharestoneBlock extends WaystoneBlockBase {
             box(0.0, 13.0, 0.0, 16.0, 16.0, 16.0)
     ).optimize();
 
-    @Nullable
     private final DyeColor color;
 
-    public SharestoneBlock(@Nullable DyeColor color, Properties properties) {
+    public SharestoneBlock(DyeColor color, Properties properties) {
         super(properties);
         this.color = color;
         registerDefaultState(this.stateDefinition.any().setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
@@ -95,7 +94,6 @@ public class SharestoneBlock extends WaystoneBlockBase {
         builder.add(HALF);
     }
 
-    @Nullable
     public DyeColor getColor() {
         return color;
     }

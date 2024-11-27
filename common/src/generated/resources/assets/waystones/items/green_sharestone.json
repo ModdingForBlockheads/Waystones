@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "waystones:item/green_sharestone",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16711936
+      }
+    ]
+  }
+}

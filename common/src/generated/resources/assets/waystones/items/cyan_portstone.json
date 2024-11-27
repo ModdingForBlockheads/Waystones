@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "waystones:item/cyan_portstone",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16711681
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "waystones:item/magenta_portstone",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -65281
+      }
+    ]
+  }
+}
