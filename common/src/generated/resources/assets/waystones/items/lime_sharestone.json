@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "waystones:item/lime_sharestone",
+    "model": "waystones:item/sharestone",
     "tints": [
       {
         "type": "minecraft:constant",

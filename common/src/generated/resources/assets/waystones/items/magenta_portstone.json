@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "waystones:item/magenta_portstone",
+    "model": "waystones:item/portstone",
     "tints": [
       {
         "type": "minecraft:constant",
