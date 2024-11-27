@@ -132,8 +132,6 @@ public class WaystoneTeleportManager {
         double y = targetPos3d.y;
         double z = targetPos3d.z;
         if (entity instanceof ServerPlayer) {
-            ChunkPos chunkPos = new ChunkPos(BlockPos.containing(x, y, z));
-            targetWorld.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
             entity.stopRiding();
             if (((ServerPlayer) entity).isSleeping()) {
                 ((ServerPlayer) entity).stopSleepInBed(true, true);
