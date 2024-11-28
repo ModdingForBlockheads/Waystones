@@ -2,6 +2,7 @@
   "values": [
     "waystones:warp_scroll",
     "waystones:return_scroll",
-    "waystones:bound_scroll"
+    "waystones:bound_scroll",
+    "waystones:blank_scroll"
   ]
 }

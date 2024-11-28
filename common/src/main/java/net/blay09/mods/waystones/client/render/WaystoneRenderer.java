@@ -56,11 +56,11 @@ public class WaystoneRenderer implements BlockEntityRenderer<WaystoneBlockEntity
             VertexConsumer vertexBuilder = MATERIAL.buffer(buffer, RenderType::entityCutout);
             int light = WaystonesConfig.getActive().client.disableTextGlow ? combinedLightIn : 15728880;
             int overlay = WaystonesConfig.getActive().client.disableTextGlow ? combinedOverlayIn : OverlayTexture.NO_OVERLAY;
-            int color = 0xFFFFFF;
+            int color = 0xFFFFFFFF;
             if (state.getBlock() == ModBlocks.endStoneWaystone) {
-                color = 0x7200FF;
+                color = 0xFF7200FF;
             } else if (state.getBlock() == ModBlocks.blackstoneWaystone) {
-                color = 0x993333;
+                color = 0xFF993333;
             }
 
             model.renderToBuffer(matrixStack, vertexBuilder, light, overlay, color);

@@ -1,11 +1,12 @@
 package net.blay09.mods.waystones.item;
 
-
 import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.item.BalmItems;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -21,6 +22,7 @@ public class ModItems {
     public static DeferredObject<CreativeModeTab> creativeModeTab;
 
     public static Item returnScroll;
+    public static Item blankScroll;
     public static Item boundScroll;
     public static Item warpScroll;
     public static Item warpStone;
@@ -31,15 +33,16 @@ public class ModItems {
     public static Item crumblingAttunedShard;
 
     public static void initialize(BalmItems items) {
-        items.registerItem(() -> returnScroll = new ReturnScrollItem(items.itemProperties()), id("return_scroll"));
-        items.registerItem(() -> boundScroll = new BoundScrollItem(items.itemProperties()), id("bound_scroll"), null);
-        items.registerItem(() -> warpScroll = new WarpScrollItem(items.itemProperties()), id("warp_scroll"));
-        items.registerItem(() -> warpStone = new WarpStoneItem(items.itemProperties()), id("warp_stone"));
-        items.registerItem(() -> warpDust = new WarpDustItem(items.itemProperties()), id("warp_dust"));
-        items.registerItem(() -> dormantShard = new ShardItem(items.itemProperties()), id("dormant_shard"));
-        items.registerItem(() -> attunedShard = new AttunedShardItem(items.itemProperties()), id("attuned_shard"), null);
-        items.registerItem(() -> deepslateShard = new ShardItem(items.itemProperties()), id("deepslate_shard"));
-        items.registerItem(() -> crumblingAttunedShard = new CrumblingAttunedShardItem(items.itemProperties()), id("crumbling_attuned_shard"), null);
+        items.registerItem((identifier) -> returnScroll = new ReturnScrollItem(defaultProperties(identifier)), id("return_scroll"));
+        items.registerItem((identifier) -> blankScroll = new BlankScrollItem(defaultProperties(identifier)), id("blank_scroll"));
+        items.registerItem((identifier) -> boundScroll = new BoundScrollItem(defaultProperties(identifier)), id("bound_scroll"), null);
+        items.registerItem((identifier) -> warpScroll = new WarpScrollItem(defaultProperties(identifier)), id("warp_scroll"));
+        items.registerItem((identifier) -> warpStone = new WarpStoneItem(defaultProperties(identifier)), id("warp_stone"));
+        items.registerItem((identifier) -> warpDust = new WarpDustItem(defaultProperties(identifier)), id("warp_dust"));
+        items.registerItem((identifier) -> dormantShard = new ShardItem(defaultProperties(identifier)), id("dormant_shard"));
+        items.registerItem((identifier) -> attunedShard = new AttunedShardItem(defaultProperties(identifier)), id("attuned_shard"), null);
+        items.registerItem((identifier) -> deepslateShard = new ShardItem(defaultProperties(identifier)), id("deepslate_shard"), null);
+        items.registerItem((identifier) -> crumblingAttunedShard = new CrumblingAttunedShardItem(defaultProperties(identifier)), id("crumbling_attuned_shard"), null);
 
         creativeModeTab = items.registerCreativeModeTab(() -> new ItemStack(ModBlocks.waystone), id("waystones"));
 
@@ -49,6 +52,7 @@ public class ModItems {
                     "white_portstone",
                     "red_sharestone",
                     "warp_plate",
+                    "blank_scroll",
                     "return_scroll",
                     "warp_scroll",
                     "warp_stone",
@@ -58,7 +62,6 @@ public class ModItems {
                     ".+_waystone",
                     ".+_sharestone",
                     ".+_portstone",
-                    "bound_scroll",
                     "attuned_shard",
                     "crumbling_attuned_shard",
             };
@@ -110,8 +113,15 @@ public class ModItems {
         });
     }
 
+    private static Item.Properties defaultProperties(ResourceLocation identifier) {
+        return new Item.Properties().setId(itemId(identifier));
+    }
+
     private static ResourceLocation id(String name) {
         return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
-    
+
+    private static ResourceKey<Item> itemId(ResourceLocation identifier) {
+        return ResourceKey.create(Registries.ITEM, identifier);
+    }
 }

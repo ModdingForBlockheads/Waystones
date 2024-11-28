@@ -30,6 +30,11 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
     }
 
     @Override
+    public boolean isTransient() {
+        return getBackingWaystone().isTransient();
+    }
+
+    @Override
     public boolean isValid() {
         return WaystoneManagerImpl.get(server).getWaystoneById(waystoneUid).isPresent();
     }
@@ -116,6 +121,14 @@ public class WaystoneProxy implements Waystone, MutableWaystone {
         Waystone backingWaystone = getBackingWaystone();
         if (backingWaystone instanceof MutableWaystone) {
             ((MutableWaystone) backingWaystone).setOwnerUid(ownerUid);
+        }
+    }
+
+    @Override
+    public void setTransient(boolean isTransient) {
+        Waystone backingWaystone = getBackingWaystone();
+        if (backingWaystone instanceof MutableWaystone) {
+            ((MutableWaystone) backingWaystone).setTransient(isTransient);
         }
     }
 

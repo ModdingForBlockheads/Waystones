@@ -32,6 +32,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
     private final UUID waystoneUid;
     private final WaystoneOrigin origin;
 
+    private boolean isTransient;
     private ResourceKey<Level> dimension;
     private BlockPos pos;
 
@@ -129,6 +130,16 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         return state.is(ModBlockTags.IS_TELEPORT_TARGET);
     }
 
+    @Override
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    @Override
+    public void setTransient(boolean isTransient) {
+        this.isTransient = isTransient;
+    }
+
     public static List<Waystone> readList(RegistryFriendlyByteBuf buf) {
         int size = buf.readShort();
         List<Waystone> waystones = new ArrayList<>(size);
@@ -175,8 +186,10 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         }
         final var ownerUid = compound.contains("OwnerUid") ? NbtUtils.loadUUID(Objects.requireNonNull(compound.get("OwnerUid"))) : null;
         final var waystoneType = compound.contains("Type") ? ResourceLocation.parse(compound.getString("Type")) : WaystoneTypes.WAYSTONE;
+        final var isTransient = compound.contains("Transient") && compound.getBoolean("Transient");
         final var waystone = new WaystoneImpl(waystoneType, waystoneUid, dimensionType, pos, origin, ownerUid);
         waystone.setName(name);
+        waystone.setTransient(isTransient);
         if (compound.contains("Visibility")) {
             waystone.setVisibility(WaystoneVisibility.valueOf(compound.getString("Visibility")));
         } else {
@@ -207,6 +220,7 @@ public class WaystoneImpl implements Waystone, MutableWaystone {
         compound.putString("Type", waystone.getWaystoneType().toString());
         compound.putString("NameV2", Component.Serializer.toJson(waystone.getName(), provider));
         compound.putString("World", waystone.getDimension().location().toString());
+        compound.putBoolean("Transient", waystone.isTransient());
         compound.put("BlockPos", NbtUtils.writeBlockPos(waystone.getPos()));
         compound.putString("Origin", waystone.getOrigin().name());
         if (waystone.getOwnerUid() != null) {

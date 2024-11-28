@@ -27,6 +27,19 @@ repositories {
         filter { includeGroupAndSubgroups("org.spongepowered") }
     }
     maven { url "https://maven.twelveiterations.com/repository/maven-public/" }
+    exclusiveContent {
+        forRepositories(
+                maven {
+                    name = 'ParchmentMC'
+                    url = 'https://maven.parchmentmc.org/'
+                },
+                maven {
+                    name = "NeoForge"
+                    url = 'https://maven.neoforged.net/releases'
+                }
+        )
+        filter { includeGroup('org.parchmentmc.data') }
+    }
 }
 
 dependencies {
@@ -75,6 +88,7 @@ processResources {
             "version": version,
             "group": project.group, //Else we target the task's group.
             "minecraft_version": minecraft_version,
+            "minimum_minecraft_version": minimum_minecraft_version,
             "forge_version": forge_version,
             "forge_loader_version_range": forge_loader_version_range,
             "forge_version_range": forge_version_range,

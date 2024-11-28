@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -54,6 +56,18 @@ public class WaystonesAPI {
      */
     public static Optional<Waystone> getWaystone(Level level, UUID uuid) {
         return __internalMethods.getWaystone(level, uuid);
+    }
+
+    public static boolean isWaystoneActivated(Player player, Waystone waystone) {
+        return __internalMethods.isWaystoneActivated(player, waystone);
+    }
+
+    public static Collection<Waystone> getActivatedWaystones(Player player) {
+        return __internalMethods.getActivatedWaystones(player);
+    }
+
+    public static Optional<Waystone> getNearestWaystone(Player player) {
+        return __internalMethods.getNearestWaystone(player);
     }
 
     public static Optional<Waystone> placeWaystone(Level level, BlockPos pos, WaystoneStyle style) {
@@ -108,4 +122,11 @@ public class WaystonesAPI {
         __internalMethods.registerParameterSerializer(parameterSerializer);
     }
 
+    public static void activateWaystone(ServerPlayer player, Waystone waystone) {
+        __internalMethods.activateWaystone(player, waystone);
+    }
+
+    public static void deactivateWaystone(ServerPlayer player, Waystone waystone) {
+        __internalMethods.deactivateWaystone(player, waystone);
+    }
 }

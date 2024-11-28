@@ -1,17 +1,22 @@
 plugins {
     id 'multiloader-common'
-    id 'org.spongepowered.gradle.vanilla' version '0.2.1-SNAPSHOT'
+    id 'net.neoforged.moddev'
 }
 
 base {
     archivesName = "${mod_id}-common-${minecraft_version}"
 }
 
-minecraft {
-    version(minecraft_version)
-    def aw = file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWideners(aw)
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.add(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
     }
 }
 

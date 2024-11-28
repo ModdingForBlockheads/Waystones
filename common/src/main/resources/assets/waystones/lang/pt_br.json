@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "block.waystones.waystone": "Obelisco",
-  "block.waystones.mossy_waystone": "Obelisco de Pedra Musgosa",
-  "block.waystones.sandy_waystone": "Obelisco de Arenito",
+  "item.waystones.waystone": "Obelisco",
+  "item.waystones.mossy_waystone": "Obelisco de Pedra Musgosa",
+  "item.waystones.sandy_waystone": "Obelisco de Arenito",
   "item.waystones.warp_scroll": "Pergaminho de Teletransporte",
   "item.waystones.warp_scroll_bound": "Pergaminho de Teletransporte (Vinculado)",
   "item.waystones.return_scroll": "Pergaminho do Retorno",

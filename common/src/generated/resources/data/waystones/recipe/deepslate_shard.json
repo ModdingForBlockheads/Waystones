@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:deepslate"
-    },
-    {
-      "item": "minecraft:flint"
-    }
+    "minecraft:deepslate",
+    "minecraft:flint"
   ],
   "result": {
     "count": 1,

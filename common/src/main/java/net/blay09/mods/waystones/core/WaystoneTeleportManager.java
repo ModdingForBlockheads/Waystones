@@ -35,7 +35,7 @@ public class WaystoneTeleportManager {
 
     public static Collection<? extends Entity> findPets(Entity entity) {
         return entity.level().getEntitiesOfClass(TamableAnimal.class, new AABB(entity.blockPosition()).inflate(10),
-                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
+                pet -> entity.getUUID().equals(pet.getOwnerUUID()) && !pet.isOrderedToSit() && !pet.isLeashed() && !WaystonePermissionManager.isEntityDeniedTeleports(pet)
         );
     }
 
@@ -140,9 +140,9 @@ public class WaystoneTeleportManager {
             }
 
             if (targetWorld == entity.level()) {
-                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot(), Collections.emptySet());
+                ((ServerPlayer) entity).connection.teleport(x, y, z, yaw, entity.getXRot());
             } else {
-                ((ServerPlayer) entity).teleportTo(targetWorld, x, y, z, yaw, entity.getXRot());
+                entity.teleportTo(targetWorld, x, y, z, Set.of(), yaw, entity.getXRot(), false);
             }
 
             entity.setYHeadRot(yaw);
@@ -154,7 +154,7 @@ public class WaystoneTeleportManager {
             } else {
                 entity.unRide();
                 Entity oldEntity = entity;
-                entity = entity.getType().create(targetWorld);
+                entity = entity.getType().create(targetWorld, EntitySpawnReason.DIMENSION_TRAVEL);
                 if (entity == null) {
                     return oldEntity;
                 }

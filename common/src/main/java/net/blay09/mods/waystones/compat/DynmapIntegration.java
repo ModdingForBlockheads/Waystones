@@ -13,7 +13,6 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerSet;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class DynmapIntegration extends DynmapCommonAPIListener {
@@ -26,10 +25,10 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
 
     private void prepareMarkerSets() {
         if (waystoneMarkers == null) {
-            waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", Collections.emptySet(), false);
+            waystoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:waystones", "Waystones", null, false);
         }
         if (sharestoneMarkers == null) {
-            sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", Collections.emptySet(), false);
+            sharestoneMarkers = api.getMarkerAPI().createMarkerSet("waystones:sharestones", "Sharestones", null, false);
         }
     }
 
@@ -115,13 +114,22 @@ public class DynmapIntegration extends DynmapCommonAPIListener {
     public static Marker createWaystoneMarker(MarkerSet markerSet, Waystone waystone) {
         return markerSet.createMarker(getMarkerId(waystone),
                 waystone.getName().getString(),
-                true,
-                waystone.getDimension().location().toString(),
+                false,
+                getDynmapWorldName(waystone.getDimension().location()),
                 waystone.getPos().getX(),
                 waystone.getPos().getY(),
                 waystone.getPos().getZ(),
                 markerSet.getDefaultMarkerIcon(),
                 false);
+    }
+
+    private static String getDynmapWorldName(ResourceLocation id) {
+        return switch (id.toString()) {
+            case "minecraft:overworld" -> Balm.getHooks().getServer().getWorldData().getLevelName();
+            case "minecraft:the_nether" -> "DIM-1";
+            case "minecraft:the_end" -> "DIM1";
+            default -> id.getNamespace() + "_" + id.getPath();
+        };
     }
 
     private static boolean isSupportedWaystoneType(Waystone waystone) {

@@ -55,7 +55,7 @@ public class WaystonePlacement extends PlacementModifier {
             int x = pos.getX();
             int z = pos.getZ();
             int y = context.getHeight(heightmap, x, z);
-            return y > context.getMinBuildHeight() ? Stream.of(new BlockPos(x, y, z)) : Stream.of();
+            return y > context.getMinY() ? Stream.of(new BlockPos(x, y, z)) : Stream.of();
         } else {
             return Stream.empty();
         }

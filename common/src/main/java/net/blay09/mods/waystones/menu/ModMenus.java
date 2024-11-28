@@ -7,7 +7,6 @@ import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
@@ -149,7 +148,7 @@ public class ModMenus {
                 public WaystoneEditMenu create(int windowId, Inventory inventory, WaystoneEditMenu.Data data) {
                     BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.pos());
                     if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {
-                        return new WaystoneEditMenu(windowId, data.waystone(), waystoneBlockEntity, inventory, data.modifierCount(), data.canEdit());
+                        return new WaystoneEditMenu(windowId, data.waystone(), waystoneBlockEntity, inventory, data.modifierCount(), data.error().orElse(null));
                     }
 
                     return null;

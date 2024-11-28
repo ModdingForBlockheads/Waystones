@@ -10,6 +10,7 @@ import net.blay09.mods.balm.common.BalmBlockEntity;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.blay09.mods.waystones.api.error.WaystoneEditError;
 import net.blay09.mods.waystones.block.WaystoneBlock;
 import net.blay09.mods.waystones.block.WaystoneBlockBase;
 import net.blay09.mods.waystones.component.ModComponents;
@@ -207,6 +208,8 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         waystone = existingWaystone;
         existingWaystone.setDimension(world.getLevel().dimension());
         existingWaystone.setPos(worldPosition);
+        existingWaystone.setTransient(false);
+        WaystoneManagerImpl.get(world.getServer()).updateWaystone(waystone);
         setChanged();
         sync();
     }
@@ -264,13 +267,18 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
-                return new WaystoneEditMenu(i, getWaystone(), WaystoneBlockEntityBase.this, playerInventory, getModifierCount(), error.isEmpty());
+                return new WaystoneEditMenu(i,
+                        getWaystone(),
+                        WaystoneBlockEntityBase.this,
+                        playerInventory,
+                        getModifierCount(),
+                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable).orElse(null));
             }
 
             @Override
             public WaystoneEditMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
                 final var error = WaystonePermissionManager.mayEditWaystone(serverPlayer, serverPlayer.level(), getWaystone());
-                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), getModifierCount(), error.isEmpty());
+                return new WaystoneEditMenu.Data(worldPosition, getWaystone(), getModifierCount(), error.map(WaystoneEditError::getTranslationKey).map(Component::translatable));
             }
 
             @Override

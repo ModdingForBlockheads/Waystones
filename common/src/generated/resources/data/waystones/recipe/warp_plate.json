@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": {
-      "item": "waystones:dormant_shard"
-    },
-    "S": {
-      "item": "minecraft:stone_bricks"
-    },
-    "W": {
-      "item": "waystones:warp_dust"
-    }
+    "F": "waystones:dormant_shard",
+    "S": "minecraft:stone_bricks",
+    "W": "waystones:warp_dust"
   },
   "pattern": [
     "SWS",

@@ -45,7 +45,7 @@ public class PortstoneRenderer implements BlockEntityRenderer<PortstoneBlockEnti
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
-            level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
+            level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
         DyeColor color = ((PortstoneBlock) state.getBlock()).getColor();

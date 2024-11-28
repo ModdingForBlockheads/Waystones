@@ -66,7 +66,7 @@ public class SharestoneRenderer implements BlockEntityRenderer<SharestoneBlockEn
 
         if (warpStoneItem == null) {
             warpStoneItem = new ItemStack(ModItems.warpStone);
-            level.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolder(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
+            level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).get(Enchantments.UNBREAKING).ifPresent(it -> warpStoneItem.enchant(it, 1));
         }
 
         float angle = gameTime / 2f % 360;

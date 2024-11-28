@@ -1,12 +1,16 @@
 package net.blay09.mods.waystones.command;
 
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.blay09.mods.balm.api.command.BalmCommands;
 import net.blay09.mods.waystones.api.Waystone;
+import net.blay09.mods.waystones.api.WaystoneStyle;
+import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.comparator.WaystoneComparators;
 import net.blay09.mods.waystones.core.PlayerWaystoneManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -16,9 +20,86 @@ import net.minecraft.server.level.ServerPlayer;
 import static net.minecraft.commands.Commands.argument;
 
 public class ModCommands {
+    private static final SimpleCommandExceptionType ERROR_WAYSTONE_NOT_FOUND = new SimpleCommandExceptionType(Component.translatable(
+            "commands.waystones.waystone_not_found"));
+
     public static void initialize(BalmCommands commands) {
         commands.register(dispatcher -> dispatcher.register(Commands.literal("waystones")
                 .requires(source -> source.isPlayer() && source.hasPermission(2))
+                .then(Commands.literal("activate")
+                        .then(argument("targets", EntityArgument.players())
+                                .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
+                                    final var targets = EntityArgument.getPlayers(context, "targets");
+                                    final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+                                    final var foundWaystone = WaystonesAPI.getWaystoneAt(context.getSource().getLevel(), pos);
+                                    if (foundWaystone.isPresent()) {
+                                        final var waystone = foundWaystone.get();
+                                        for (final var player : targets) {
+                                            WaystonesAPI.activateWaystone(player, waystone);
+                                        }
+
+                                        if (targets.size() == 1) {
+                                            context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.activate.success.single",
+                                                    waystone.getName(), targets.iterator().next().getDisplayName()), true);
+                                        } else {
+                                            context.getSource()
+                                                    .sendSuccess(() -> Component.translatable("commands.waystones.activate.success.multiple",
+                                                            waystone.getName(),
+                                                            targets.size()), true);
+                                        }
+                                    } else {
+                                        throw ERROR_WAYSTONE_NOT_FOUND.create();
+                                    }
+                                    return targets.size();
+                                }))))
+                .then(Commands.literal("forget")
+                        .then(argument("targets", EntityArgument.players())
+                                .then(argument("pos", BlockPosArgument.blockPos()).executes(context -> {
+                                    final var targets = EntityArgument.getPlayers(context, "targets");
+                                    final var pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+                                    final var foundWaystone = WaystonesAPI.getWaystoneAt(context.getSource().getLevel(), pos);
+                                    if (foundWaystone.isPresent()) {
+                                        final var waystone = foundWaystone.get();
+                                        for (final var player : targets) {
+                                            WaystonesAPI.deactivateWaystone(player, waystone);
+                                        }
+
+                                        if (targets.size() == 1) {
+                                            context.getSource().sendSuccess(() -> Component.translatable("commands.waystones.forget.success.single",
+                                                    waystone.getName(), targets.iterator().next().getDisplayName()), true);
+                                        } else {
+                                            context.getSource()
+                                                    .sendSuccess(() -> Component.translatable("commands.waystones.forget.success.multiple",
+                                                            waystone.getName(),
+                                                            targets.size()), true);
+                                        }
+                                    } else {
+                                        throw ERROR_WAYSTONE_NOT_FOUND.create();
+                                    }
+                                    return targets.size();
+                                }))
+                                .then(Commands.literal("all").executes(context -> {
+                                    final var targets = EntityArgument.getPlayers(context, "targets");
+                                    int totalDeactivated = 0;
+                                    for (final var player : targets) {
+                                        final var waystones = PlayerWaystoneManager.getActivatedWaystones(player);
+                                        for (final var waystone : waystones) {
+                                            WaystonesAPI.deactivateWaystone(player, waystone);
+                                        }
+                                        totalDeactivated += waystones.size();
+                                    }
+
+                                    if (targets.size() == 1) {
+                                        context.getSource()
+                                                .sendSuccess(() -> Component.translatable("commands.waystones.forget.all.success.single",
+                                                        targets.iterator().next().getDisplayName()), true);
+                                    } else {
+                                        context.getSource()
+                                                .sendSuccess(() -> Component.translatable("commands.waystones.forget.all.success.multiple",
+                                                        targets.size()), true);
+                                    }
+                                    return totalDeactivated;
+                                }))))
                 .then(Commands.literal("count")
                         .then(argument("player", EntityArgument.player()).executes(new CountWaystonesCommand())))
                 .then(Commands.literal("list")

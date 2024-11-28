@@ -20,7 +20,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -28,7 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -50,12 +49,12 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack itemStack) {
+    public ItemUseAnimation getUseAnimation(ItemStack itemStack) {
         if (WaystonesConfig.getActive().general.warpStoneUseTime <= 0 || Compat.isVivecraftInstalled) {
-            return UseAnim.NONE;
+            return ItemUseAnimation.NONE;
         }
 
-        return UseAnim.BOW;
+        return ItemUseAnimation.BOW;
     }
 
     @Override
@@ -161,7 +160,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         final var itemStack = player.getItemInHand(hand);
         if (!player.isUsingItem() && !world.isClientSide) {
             world.playSound(null, player, SoundEvents.PORTAL_TRIGGER, SoundSource.PLAYERS, 0.1f, 2f);
@@ -171,7 +170,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
         } else {
             player.startUsingItem(hand);
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
+        return InteractionResult.SUCCESS;
 
     }
 

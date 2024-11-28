@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:polished_andesite"
-    },
-    "D": {
-      "tag": "c:dyes/light_blue"
-    },
-    "S": {
-      "item": "minecraft:stone_bricks"
-    },
-    "W": {
-      "item": "waystones:warp_stone"
-    }
+    "B": "minecraft:polished_andesite",
+    "D": "#c:dyes/light_blue",
+    "S": "minecraft:stone_bricks",
+    "W": "waystones:warp_stone"
   },
   "pattern": [
     "DSD",

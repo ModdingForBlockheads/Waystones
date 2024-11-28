@@ -7,6 +7,8 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -19,7 +21,8 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider lookup) {
-        getOrCreateTagBuilder(ModItemTags.SCROLLS).add(ModItems.warpScroll, ModItems.returnScroll, ModItems.boundScroll);
+        getOrCreateTagBuilder(TagKey.create(Registries.ITEM, ResourceLocation.withDefaultNamespace("enchantable/durability"))).add(ModItems.warpStone);
+        getOrCreateTagBuilder(ModItemTags.SCROLLS).add(ModItems.warpScroll, ModItems.returnScroll, ModItems.boundScroll, ModItems.blankScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_SCROLLS).add(ModItems.warpScroll);
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);

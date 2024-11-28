@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.requirement;
 import net.blay09.mods.waystones.requirement.ExperiencePointsRequirement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -24,7 +25,7 @@ public class ExperiencePointsRequirementRenderer implements RequirementRenderer<
         if (levels > 0) {
             final var canAfford = requirement.canAfford(player);
             final var spriteIndex = Math.max(0, Math.min(levels, 3) - 1);
-            guiGraphics.blitSprite(canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
+            guiGraphics.blitSprite(RenderType::guiTextured, canAfford ? ENABLED_LEVEL_SPRITES[spriteIndex] : DISABLED_LEVEL_SPRITES[spriteIndex], x, y, 16, 16);
 
             final var font = Minecraft.getInstance().font;
             if (levels > 3) {

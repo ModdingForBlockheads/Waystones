@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -42,7 +43,7 @@ public class WaystoneVisbilityButton extends Button implements ITooltipProvider 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         final var sprite = getSprites().get(this.isActive(), this.isHoveredOrFocused());
-        guiGraphics.blitSprite(sprite, getX(), getY(), 20, 20);
+        guiGraphics.blitSprite(RenderType::guiTextured, sprite, getX(), getY(), 20, 20);
     }
 
     @Override

@@ -8,6 +8,7 @@ import net.blay09.mods.waystones.api.event.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.config.InventoryButtonMode;
 import net.blay09.mods.waystones.config.WaystonesConfig;
+import net.blay09.mods.waystones.config.WaystonesConfigData;
 import net.blay09.mods.waystones.worldgen.namegen.NameGenerationMode;
 import net.blay09.mods.waystones.worldgen.namegen.NameGeneratorManager;
 import net.minecraft.resources.ResourceLocation;
@@ -36,8 +37,9 @@ public class PlayerWaystoneManager {
             ((MutableWaystone) waystone).setName(name);
         }
 
-        if (!waystone.hasOwner() && waystone instanceof MutableWaystone) {
-            ((MutableWaystone) waystone).setOwnerUid(player.getUUID());
+        if (!waystone.hasOwner() && waystone instanceof MutableWaystone mutableWaystone) {
+            mutableWaystone.setOwnerUid(player.getUUID());
+            mutableWaystone.setVisibility(WaystonesConfig.getActive().general.defaultVisibility);
         }
 
         if (player.getServer() != null) {
@@ -163,7 +165,7 @@ public class PlayerWaystoneManager {
     }
 
     public static Collection<Waystone> getTargetsForWaystone(Player player, Waystone waystone) {
-        final var result = getTargetsForWaystoneType(player,  waystone.getWaystoneType());
+        final var result = getTargetsForWaystoneType(player, waystone.getWaystoneType());
 
         final var blockEntity = player.level().getBlockEntity(waystone.getPos());
         if (blockEntity instanceof WaystoneBlockEntityBase waystoneBlockEntity) {

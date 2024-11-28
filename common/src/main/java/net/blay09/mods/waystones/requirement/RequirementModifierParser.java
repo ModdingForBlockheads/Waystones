@@ -24,7 +24,7 @@ public class RequirementModifierParser {
             final var requirement = parseRequirement(functionPart);
             return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
         } catch (Exception e) {
-            Waystones.logger.error("Could not parse warp requirement", e);
+            Waystones.logger.error("Could not parse warp requirement: {}", input, e);
             return Optional.empty();
         }
     }

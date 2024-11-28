@@ -40,7 +40,11 @@ public class WaystonesConfigData implements BalmConfigData {
         public Set<WaystoneOrigin> restrictedWaystones = Set.of(WaystoneOrigin.PLAYER);
 
         @Synced
-        @Comment("Add GLOBAL to allow every player to create global waystones.")
+        @Comment("Set to \"GLOBAL\" and change allowedVisibilities to have newly placed or found waystones be global by default.")
+        public WaystoneVisibility defaultVisibility = WaystoneVisibility.ACTIVATION;
+
+        @Synced
+        @Comment("Add \"GLOBAL\" to allow every player to create global waystones.")
         @ExpectedType(WaystoneVisibility.class)
         public Set<WaystoneVisibility> allowedVisibilities = Set.of();
 
@@ -80,7 +84,7 @@ public class WaystonesConfigData implements BalmConfigData {
 
         @Synced
         @Comment("Set to ENABLED to have nearby pets teleport with you. Set to SAME_DIMENSION to have nearby pets teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")
-        public TransportMobs transportPets = TransportMobs.SAME_DIMENSION;
+        public TransportMobs transportPets = TransportMobs.DISABLED;
 
         @Synced
         @Comment("Set to ENABLED to have leashed mobs teleport with you. Set to SAME_DIMENSION to have leashed mobs teleport with you only if you're not changing dimensions. Set to DISABLED to disable.")

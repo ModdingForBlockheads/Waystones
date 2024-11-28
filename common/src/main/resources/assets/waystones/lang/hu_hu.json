@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "block.waystones.waystone": "Irányoszlop",
-  "block.waystones.mossy_waystone": "Mohás irányoszlop",
-  "block.waystones.sandy_waystone": "Homokos irányoszlop",
+  "item.waystones.waystone": "Irányoszlop",
+  "item.waystones.mossy_waystone": "Mohás irányoszlop",
+  "item.waystones.sandy_waystone": "Homokos irányoszlop",
   "item.waystones.warp_scroll": "Ugró tekercs",
   "item.waystones.warp_scroll_bound": "Ugró tekercs (Hozzákötve)",
   "item.waystones.return_scroll": "Visszatérő tekercs",

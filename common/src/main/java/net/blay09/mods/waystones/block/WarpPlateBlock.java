@@ -5,13 +5,10 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.ModBlockEntities;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneProxy;
-import net.blay09.mods.waystones.item.ModItems;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -20,9 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -160,7 +155,7 @@ public class WarpPlateBlock extends WaystoneBlockBase {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (itemStack.is(ModItemTags.WARP_SHARDS)) {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
                 final var existing = warpPlate.getShardItem();
@@ -168,10 +163,10 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                     warpPlate.setShardItem(player.getAbilities().instabuild ? itemStack.copy().split(1) : itemStack.split(1));
                 }
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override
@@ -185,12 +180,12 @@ public class WarpPlateBlock extends WaystoneBlockBase {
                     warpPlate.setShardItem(ItemStack.EMPTY);
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         if (level.getBlockEntity(pos) instanceof WarpPlateBlockEntity warpPlate) {
             warpPlate.getSettingsMenuProvider().ifPresent(it -> Balm.getNetworking().openGui(player, it));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;

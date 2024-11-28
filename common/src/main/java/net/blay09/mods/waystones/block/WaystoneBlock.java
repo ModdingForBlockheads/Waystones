@@ -89,7 +89,7 @@ public class WaystoneBlock extends WaystoneBlockBase {
             if (!world.isClientSide) {
                 final var nameComponent = waystone.getName().copy().withStyle(ChatFormatting.WHITE);
                 final var chatComponent = Component.translatable("chat.waystones.waystone_activated", nameComponent).withStyle(ChatFormatting.YELLOW);
-                player.sendSystemMessage(chatComponent);
+                player.displayClientMessage(chatComponent, false);
 
                 WaystoneSyncManager.sendActivatedWaystones(player);
 

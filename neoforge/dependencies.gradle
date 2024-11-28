@@ -3,8 +3,8 @@ dependencies {
         changing = balm_version.contains("SNAPSHOT")
     }
     compileOnly group: 'info.journeymap', name: 'journeymap-api-neoforge', version: project.journeymap_api_version, changing: true
-    runtimeOnly "mysticdrew:common-networking-neoforge:$journeymap_networking_version"
-    runtimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_neoforge_file_id}"
+    // runtimeOnly "mysticdrew:common-networking-neoforge:$journeymap_networking_version"
+    // runtimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_neoforge_file_id}"
     compileOnly "mezz.jei:jei-$jei_minecraft_version-common-api:$jei_version"
     compileOnly "curse.maven:jade-324717:$jade_neoforge_version"
     compileOnly "mcp.mobius.waila:wthit-api:forge-$wthit_version"

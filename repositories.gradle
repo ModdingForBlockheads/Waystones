@@ -49,6 +49,7 @@ repositories {
         url = 'https://jitpack.io'
         content {
             includeGroup "com.github.BlueMap-Minecraft"
+            includeGroup "com.github.mattidragon"
         }
     }
 
@@ -64,5 +65,23 @@ repositories {
         content {
             includeGroup "de.siphalor"
         }
+    }
+
+    maven {
+        url = "https://dl.cloudsmith.io/public/novamachina-mods/release/maven/"
+        content {
+            includeGroup "novamachina.novacore"
+            includeGroup "novamachina.exnihilosequentia"
+        }
+    }
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Minecraft'
+                url = 'https://libraries.minecraft.net/'
+            }
+        }
+        filter { includeGroupAndSubgroups("com.mojang") }
     }
 }

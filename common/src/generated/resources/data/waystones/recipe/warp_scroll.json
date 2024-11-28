@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "item": "minecraft:ink_sac"
-    },
-    "E": {
-      "item": "minecraft:ender_pearl"
-    },
-    "G": {
-      "tag": "c:nuggets/gold"
-    },
-    "P": {
-      "item": "minecraft:paper"
-    }
+    "D": "minecraft:ink_sac",
+    "E": "minecraft:ender_pearl",
+    "G": "#c:nuggets/gold",
+    "P": "minecraft:paper"
   },
   "pattern": [
     "GDG",

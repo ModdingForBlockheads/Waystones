@@ -18,6 +18,7 @@ import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -160,6 +162,10 @@ public class InternalMethodsImpl implements InternalMethods {
         final var requirementsContext = new WarpRequirementsContextImpl(context);
         final var configuredModifiers = WaystonesConfig.getActive().teleports.warpRequirements;
         for (final var modifier : configuredModifiers) {
+            if (modifier.isBlank()) {
+                continue;
+            }
+
             RequirementModifierParser.parse(modifier)
                     .filter(configuredModifier -> configuredModifier.requirement().modifier().isEnabled())
                     .ifPresent(requirementsContext::apply);
@@ -191,5 +197,32 @@ public class InternalMethodsImpl implements InternalMethods {
     @Override
     public void registerParameterSerializer(ParameterSerializer<?> parameterSerializer) {
         RequirementRegistry.register(parameterSerializer);
+    }
+
+    @Override
+    public boolean isWaystoneActivated(Player player, Waystone waystone) {
+        return PlayerWaystoneManager.isWaystoneActivated(player, waystone);
+    }
+
+    @Override
+    public Collection<Waystone> getActivatedWaystones(Player player) {
+        return PlayerWaystoneManager.getActivatedWaystones(player);
+    }
+
+    @Override
+    public Optional<Waystone> getNearestWaystone(Player player) {
+        return PlayerWaystoneManager.getNearestWaystone(player);
+    }
+
+    @Override
+    public void activateWaystone(ServerPlayer player, Waystone waystone) {
+        PlayerWaystoneManager.activateWaystone(player, waystone);
+        WaystoneSyncManager.sendActivatedWaystones(player);
+    }
+
+    @Override
+    public void deactivateWaystone(ServerPlayer player, Waystone waystone) {
+        PlayerWaystoneManager.deactivateWaystone(player, waystone);
+        WaystoneSyncManager.sendActivatedWaystones(player);
     }
 }

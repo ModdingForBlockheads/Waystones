@@ -40,10 +40,10 @@ public class SortWaystoneMessage implements CustomPacketPayload {
             return;
         }
 
-        if (message.waystoneUid.equals(SORT_FIRST)) {
-            PlayerWaystoneManager.sortWaystoneAsFirst(player, message.otherWaystoneUid);
-        } else if (message.waystoneUid.equals(SORT_LAST)) {
-            PlayerWaystoneManager.sortWaystoneAsLast(player, message.otherWaystoneUid);
+        if (message.otherWaystoneUid.equals(SORT_FIRST)) {
+            PlayerWaystoneManager.sortWaystoneAsFirst(player, message.waystoneUid);
+        } else if (message.otherWaystoneUid.equals(SORT_LAST)) {
+            PlayerWaystoneManager.sortWaystoneAsLast(player, message.waystoneUid);
         } else {
             PlayerWaystoneManager.sortWaystoneSwap(player, message.waystoneUid, message.otherWaystoneUid);
         }

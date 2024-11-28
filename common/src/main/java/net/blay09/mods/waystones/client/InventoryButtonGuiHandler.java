@@ -103,23 +103,16 @@ public class InventoryButtonGuiHandler {
                 final var waystone = PlayerWaystoneManager.getInventoryButtonTarget(player).orElse(InvalidWaystone.INSTANCE);
                 final var context = WaystonesAPI.createUnboundTeleportContext(player, waystone).addFlag(TeleportFlags.INVENTORY_BUTTON);
                 final var requirements = WaystonesAPI.resolveRequirements(context);
-                int secondsLeft = (int) (millisLeft / 1000);
                 if (inventoryButtonMode.hasNamedTarget()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     final var targetComponent = Component.literal(inventoryButtonMode.getNamedTarget()).withStyle(ChatFormatting.DARK_AQUA);
                     tooltip.add(Component.translatable("tooltip.waystones.bound_to", targetComponent).withStyle(ChatFormatting.GRAY));
-                    if (secondsLeft > 0) {
-                        tooltip.add(Component.empty());
-                    }
                 } else if (inventoryButtonMode.isReturnToNearest()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_nearest_waystone").withStyle(ChatFormatting.YELLOW));
                     final var nearestWaystone = PlayerWaystoneManager.getNearestWaystone(player);
                     tooltip.add(nearestWaystone.map(it -> it.getName().copy().withStyle(ChatFormatting.DARK_AQUA))
                             .map(it -> Component.translatable("tooltip.waystones.bound_to", it).withStyle(ChatFormatting.GRAY))
                             .orElseGet(() -> Component.translatable("gui.waystones.inventory.no_waystones_activated").withStyle(ChatFormatting.RED)));
-                    if (secondsLeft > 0) {
-                        tooltip.add(Component.empty());
-                    }
                 } else if (inventoryButtonMode.isReturnToAny()) {
                     tooltip.add(Component.translatable("gui.waystones.inventory.return_to_waystone").withStyle(ChatFormatting.YELLOW));
                     if (PlayerWaystoneManager.getActivatedWaystones(player).isEmpty()) {
@@ -129,10 +122,6 @@ public class InventoryButtonGuiHandler {
 
                 if (!requirements.canAfford(player)) {
                     requirements.appendHoverText(player, tooltip);
-                }
-
-                if (secondsLeft > 0) {
-                    tooltip.add(Component.translatable("tooltip.waystones.cooldown_left", secondsLeft).withStyle(ChatFormatting.GOLD));
                 }
 
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, Optional.empty(), mouseX, mouseY);

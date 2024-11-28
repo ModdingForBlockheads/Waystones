@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "waystones:mossy_waystone_from_moss_blocks"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_waystone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "waystones:waystone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_waystone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "waystones:mossy_waystone_from_moss_blocks"
+    ]
+  }
+}

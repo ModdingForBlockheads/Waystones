@@ -65,6 +65,7 @@ public class ModModelProvider extends FabricModelProvider {
         itemModelGenerator.generateFlatItem(ModItems.warpScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.returnScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModelGenerator.generateFlatItem(ModItems.boundScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.blankScroll, ModelTemplates.FLAT_HANDHELD_ITEM);
 
         final var sharestoneTemplate = new ModelTemplate(Optional.of(ResourceLocation.fromNamespaceAndPath("waystones", "item/sharestone")), Optional.empty());
         for (final var sharestone : ModBlocks.sharestones) {

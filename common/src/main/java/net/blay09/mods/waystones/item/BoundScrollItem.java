@@ -9,9 +9,6 @@ import net.blay09.mods.waystones.component.ModComponents;
 import net.blay09.mods.waystones.config.WaystonesConfig;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +20,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage, IFOVOnUse, IAttunementItem {
@@ -43,11 +39,7 @@ public class BoundScrollItem extends ScrollItemBase implements IResetUseOnDamage
             final var boundTo = getWaystoneAttunedTo(player.getServer(), player, stack);
             boundTo.ifPresent(targetWaystone -> WaystonesAPI.createDefaultTeleportContext(player, targetWaystone, it -> it.setWarpItem(stack))
                     .mapLeft(WaystonesAPI::tryTeleport)
-                    .ifLeft(it -> {
-                        if (!player.getAbilities().instabuild) {
-                            stack.shrink(1);
-                        }
-                    })
+                    .ifLeft(it -> stack.consume(1, player))
             );
         }
 

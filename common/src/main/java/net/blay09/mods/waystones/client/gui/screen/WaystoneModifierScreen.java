@@ -1,16 +1,14 @@
 package net.blay09.mods.waystones.client.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.block.WarpPlateBlock;
 import net.blay09.mods.waystones.menu.WaystoneModifierMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-
 
 public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModifierMenu> {
 
@@ -24,9 +22,7 @@ public class WaystoneModifierScreen extends AbstractContainerScreen<WaystoneModi
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int x, int y) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        guiGraphics.setColor(1f, 1f, 1f, 1f);
-        guiGraphics.blit(WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, WARP_PLATE_GUI_TEXTURES, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
     }
 
     @Override

@@ -5,18 +5,22 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class WaystoneEditMenu extends AbstractContainerMenu {
 
-    public record Data(BlockPos pos, Waystone waystone, int modifierCount, boolean canEdit) {
+    public record Data(BlockPos pos, Waystone waystone, int modifierCount, Optional<Component> error) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneEditMenu.Data> STREAM_CODEC = StreamCodec.composite(
@@ -26,21 +30,21 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
             WaystoneEditMenu.Data::waystone,
             ByteBufCodecs.INT,
             WaystoneEditMenu.Data::modifierCount,
-            ByteBufCodecs.BOOL,
-            WaystoneEditMenu.Data::canEdit,
+            ComponentSerialization.OPTIONAL_STREAM_CODEC,
+            WaystoneEditMenu.Data::error,
             WaystoneEditMenu.Data::new);
 
     private final Waystone waystone;
     private final WaystoneBlockEntityBase blockEntity;
     private final int modifierCount;
-    private final boolean canEdit;
+    private final Component error;
 
-    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, int modifierCount, boolean canEdit) {
+    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, int modifierCount, Component error) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.waystone = waystone;
         this.blockEntity = blockEntity;
         this.modifierCount = modifierCount;
-        this.canEdit = canEdit;
+        this.error = error;
     }
 
     @Override
@@ -91,6 +95,11 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
     }
 
     public boolean canEdit() {
-        return canEdit;
+        return error == null;
+    }
+
+    @Nullable
+    public Component getError() {
+        return error;
     }
 }

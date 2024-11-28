@@ -1,7 +1,5 @@
 package net.blay09.mods.waystones.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,11 +8,8 @@ import net.minecraft.client.renderer.RenderType;
 
 public class PortstoneModel extends Model {
 
-    private final ModelPart root;
-
     public PortstoneModel(ModelPart modelPart) {
-        super(it -> RenderType.cutout());
-        root = modelPart;
+        super(modelPart, it -> RenderType.cutout());
     }
 
     public static LayerDefinition createLayer(CubeDeformation cubeDeformation) {
@@ -24,8 +19,4 @@ public class PortstoneModel extends Model {
         return LayerDefinition.create(meshDefinition, 256, 256);
     }
 
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
 }

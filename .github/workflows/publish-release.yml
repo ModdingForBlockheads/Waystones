@@ -2,15 +2,21 @@ name: publish-release
 on:
   workflow_dispatch:
     inputs:
-      bump:
-        description: 'The bump in version for this release'
+      forge:
+        description: 'Forge'
         required: true
-        type: choice
-        default: patch
-        options:
-          - major
-          - minor
-          - patch
+        type: boolean
+        default: true
+      fabric:
+        description: 'Fabric'
+        required: true
+        type: boolean
+        default: true
+      neoforge:
+        description: 'NeoForge'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   create-release:
@@ -18,9 +24,11 @@ jobs:
     outputs:
       ref: v${{ steps.bump-version.outputs.version }}
       version: ${{ steps.bump-version.outputs.version }}
+      build-matrix: ${{ steps.set-build-matrix.outputs.result }}
+      publish-matrix: ${{ steps.set-publish-matrix.outputs.result }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Extracting version from properties
         shell: bash
         run: echo "version=$(cat gradle.properties | grep -w "\bversion" | cut -d= -f2)" >> $GITHUB_OUTPUT
@@ -29,7 +37,7 @@ jobs:
         uses: TwelveIterationMods/bump-version@v1
         with:
           version: ${{ steps.extract-version.outputs.version }}
-          bump: ${{ inputs.bump }}
+          bump: patch
         id: bump-version
       - name: Updating version properties
         run: |
@@ -43,36 +51,136 @@ jobs:
         shell: bash
         env:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  publish-release:
+      - name: Preparing build matrix
+        id: set-build-matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
+            const includeForge = includes.includes('forge') && ${{inputs.forge}};
+            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
+            return {
+              loader: [includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
+            }
+      - name: Preparing publish matrix
+        id: set-publish-matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includeFabric = includes.includes('fabric') && ${{inputs.fabric}};
+            const includeForge = includes.includes('forge') && ${{inputs.forge}};
+            const includeNeoForge = includes.includes('neoforge') && ${{inputs.neoforge}};
+            return {
+              loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
+              site: ['curseforge', 'modrinth', 'publish'],
+              exclude: [
+                {loader: 'common', site: 'curseforge'},
+                {loader: 'common', site: 'modrinth'}
+              ]
+            }
+  build-common:
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-    strategy:
-      matrix:
-        loader: [ common, fabric, forge, neoforge ]
-        site: [ curseforge, modrinth, publish ]
-        exclude:
-          - loader: common
-            site: curseforge
-          - loader: common
-            site: modrinth
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ needs.create-release.outputs.ref }}
       - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/actions/wrapper-validation@v3
       - name: Setup JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 21
           distribution: temurin
+          cache: 'gradle'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
+      - name: Build common artifact
+        run: ./gradlew :common:build '-Pversion=${{needs.create-release.outputs.version}}'
+      - name: Upload common artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: common-artifact
+          path: common/build
+    needs: create-release
+  build-release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.create-release.outputs.build-matrix)}}
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-release.outputs.ref }}
+      - name: Validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: 'gradle'
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Download common artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: common-artifact
+          path: common/build
+      - name: Build ${{ matrix.loader }} artifact
+        run: ./gradlew :${{ matrix.loader }}:build '-Pversion=${{needs.create-release.outputs.version}}'
+      - name: Upload ${{ matrix.loader }} artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.loader }}-artifact
+          path: ${{ matrix.loader }}/build
+    needs:
+      - create-release
+      - build-common
+  publish-release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.create-release.outputs.publish-matrix)}}
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-release.outputs.ref }}
+      - name: Download ${{ matrix.loader }} artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.loader }}-artifact
+          path: ${{ matrix.loader }}/build
+      - name: Validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: 'gradle'
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Check current artifact hash TODO
+        run: sha1sum ${{ matrix.loader }}/build/libs/*
       - name: Publish
         run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
         env:
           CURSEFORGE_TOKEN: ${{secrets.CURSEFORGE_TOKEN}}
           MODRINTH_TOKEN: ${{secrets.MODRINTH_TOKEN}}
-    needs: create-release
+      - name: Check new artifact hash TODO
+        run: sha1sum ${{ matrix.loader }}/build/libs/*
+    needs:
+      - create-release
+      - build-common
+      - build-release

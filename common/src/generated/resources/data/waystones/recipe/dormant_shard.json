@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "waystones:warp_dust"
-    },
-    {
-      "item": "waystones:warp_dust"
-    },
-    {
-      "item": "minecraft:flint"
-    }
+    "waystones:warp_dust",
+    "waystones:warp_dust",
+    "minecraft:flint"
   ],
   "result": {
     "count": 1,

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "minecraft:feather",
+    "G": "#c:nuggets/gold",
+    "P": "minecraft:paper"
+  },
+  "pattern": [
+    "GFG",
+    "PPP"
+  ],
+  "result": {
+    "count": 3,
+    "id": "waystones:blank_scroll"
+  }
+}

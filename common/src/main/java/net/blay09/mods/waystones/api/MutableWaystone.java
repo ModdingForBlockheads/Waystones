@@ -17,4 +17,6 @@ public interface MutableWaystone {
     void setPos(BlockPos pos);
 
     void setOwnerUid(UUID ownerUid);
+
+    void setTransient(boolean isTransient);
 }

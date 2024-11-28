@@ -4,6 +4,8 @@ import com.mojang.datafixers.util.Either;
 import net.blay09.mods.waystones.api.requirement.*;
 import net.blay09.mods.waystones.api.error.WaystoneTeleportError;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,4 +62,14 @@ public interface InternalMethods {
     void registerConditionResolver(ConditionResolver<?> conditionResolver);
 
     void registerParameterSerializer(ParameterSerializer<?> parameterSerializer);
+
+    boolean isWaystoneActivated(Player player, Waystone waystone);
+
+    Collection<Waystone> getActivatedWaystones(Player player);
+
+    Optional<Waystone> getNearestWaystone(Player player);
+
+    void activateWaystone(ServerPlayer player, Waystone waystone);
+
+    void deactivateWaystone(ServerPlayer player, Waystone waystone);
 }

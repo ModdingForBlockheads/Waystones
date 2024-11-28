@@ -1,11 +1,13 @@
 package net.blay09.mods.waystones.block;
 
-import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.balm.api.block.BalmBlocks;
 import net.blay09.mods.waystones.Waystones;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -61,39 +63,51 @@ public class ModBlocks {
     public static final SharestoneBlock[] sharestones = new SharestoneBlock[sharestoneColors.length];
 
     public static void initialize(BalmBlocks blocks) {
-        blocks.register(() -> waystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(waystone), id("waystone"));
-        blocks.register(() -> mossyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(mossyWaystone), id("mossy_waystone"));
-        blocks.register(() -> sandyWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(sandyWaystone), id("sandy_waystone"));
-        blocks.register(() -> deepslateWaystone = new WaystoneBlock(defaultProperties().sound(SoundType.DEEPSLATE)),
-                () -> itemBlock(deepslateWaystone),
+        blocks.register((identifier) -> waystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("waystone"));
+        blocks.register((identifier) -> mossyWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("mossy_waystone"));
+        blocks.register((identifier) -> sandyWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("sandy_waystone"));
+        blocks.register((identifier) -> deepslateWaystone = new WaystoneBlock(defaultProperties(identifier).sound(SoundType.DEEPSLATE)),
+                ModBlocks::itemBlock,
                 id("deepslate_waystone"));
-        blocks.register(() -> blackstoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(blackstoneWaystone), id("blackstone_waystone"));
-        blocks.register(() -> endStoneWaystone = new WaystoneBlock(defaultProperties()), () -> itemBlock(endStoneWaystone), id("end_stone_waystone"));
-        blocks.register(() -> warpPlate = new WarpPlateBlock(defaultProperties()), () -> itemBlock(warpPlate), id("warp_plate"));
+        blocks.register((identifier) -> blackstoneWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("blackstone_waystone"));
+        blocks.register((identifier) -> endStoneWaystone = new WaystoneBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("end_stone_waystone"));
+        blocks.register((identifier) -> warpPlate = new WarpPlateBlock(defaultProperties(identifier)), ModBlocks::itemBlock, id("warp_plate"));
 
         for (final var color : portstoneColors) {
-            blocks.register(() -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties()),
-                    () -> itemBlock(portstones[color.ordinal()]),
+            blocks.register((identifier) -> portstones[color.ordinal()] = new PortstoneBlock(color, defaultProperties(identifier)),
+                    ModBlocks::itemBlock,
                     id(color.getSerializedName() + "_portstone"));
         }
 
         for (final var color : sharestoneColors) {
-            blocks.register(() -> sharestones[color.ordinal() - 1] = new SharestoneBlock(color, defaultProperties()),
-                    () -> itemBlock(sharestones[color.ordinal() - 1]),
+            blocks.register((identifier) -> sharestones[color.ordinal() - 1] = new SharestoneBlock(color, defaultProperties(identifier)),
+                    ModBlocks::itemBlock,
                     id(color.getSerializedName() + "_sharestone"));
         }
     }
 
-    private static BlockItem itemBlock(Block block) {
-        return new BlockItem(block, Balm.getItems().itemProperties());
+    private static BlockItem itemBlock(Block block, ResourceLocation name) {
+        return new BlockItem(block, defaultItemProperties(name));
     }
 
     private static ResourceLocation id(String name) {
         return ResourceLocation.fromNamespaceAndPath(Waystones.MOD_ID, name);
     }
 
-    private static BlockBehaviour.Properties defaultProperties() {
-        return Balm.getBlocks().blockProperties().sound(SoundType.STONE).strength(5f, 2000f);
+    private static ResourceKey<Block> blockId(ResourceLocation identifier) {
+        return ResourceKey.create(Registries.BLOCK, identifier);
+    }
+
+    private static ResourceKey<Item> itemId(ResourceLocation identifier) {
+        return ResourceKey.create(Registries.ITEM, identifier);
+    }
+
+    private static BlockBehaviour.Properties defaultProperties(ResourceLocation identifier) {
+        return BlockBehaviour.Properties.of().setId(blockId(identifier)).sound(SoundType.STONE).strength(5f, 2000f);
+    }
+
+    private static Item.Properties defaultItemProperties(ResourceLocation identifier) {
+        return new Item.Properties().setId(itemId(identifier));
     }
 
     @Nullable

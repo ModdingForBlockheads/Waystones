@@ -3,6 +3,7 @@ package net.blay09.mods.waystones.client.gui.widget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -30,18 +31,17 @@ public class SortWaystoneButton extends Button {
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
             int renderY = getY() - (sortDir == 1 ? 20 : 5);
             RenderSystem.enableBlend();
+            int color = 0x40FFFFFF;
             if (active && isHovered) {
-                guiGraphics.setColor(1f, 1f, 1f, 1f);
+                color = 0xFFFFFFFF;
             } else if (active) {
-                guiGraphics.setColor(1f, 1f, 1f, 0.75f);
-            } else {
-                guiGraphics.setColor(1f, 1f, 1f, 0.25f);
+                color = 0xC0FFFFFF;
             }
 
             if (isHovered && active) {
-                guiGraphics.blitSprite(sortDir == 1 ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_UP_HIGHLIGHTED_SPRITE, getX() - 5, renderY, 32, 32);
+                guiGraphics.blitSprite(RenderType::guiTextured, sortDir == 1 ? MOVE_DOWN_HIGHLIGHTED_SPRITE : MOVE_UP_HIGHLIGHTED_SPRITE, getX() - 5, renderY, 32, 32, color);
             } else {
-                guiGraphics.blitSprite(sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32);
+                guiGraphics.blitSprite(RenderType::guiTextured, sortDir == 1 ? MOVE_DOWN_SPRITE : MOVE_UP_SPRITE, getX() - 5, renderY, 32, 32, color);
             }
 
             RenderSystem.disableBlend();

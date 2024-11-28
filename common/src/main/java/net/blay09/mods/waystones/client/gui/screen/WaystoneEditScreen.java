@@ -6,6 +6,7 @@ import net.blay09.mods.waystones.core.WaystoneVisibilities;
 import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.blay09.mods.waystones.network.message.EditWaystoneMessage;
 import net.blay09.mods.waystones.network.message.RequestManageWaystoneModifiersMessage;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -44,6 +45,12 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
         }
 
         var y = topPos + titleLabelY + 16;
+
+        final var error = menu.getError();
+        if (error != null) {
+            y += 9;
+        }
+
         textField = new EditBox(Minecraft.getInstance().font, leftPos, y, 176, 20, textField, Component.empty());
         textField.setMaxLength(128);
         textField.setValue(oldText);
@@ -125,6 +132,10 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawCenteredString(font, title, 176 / 2, titleLabelY, 0xFFFFFFFF);
+        final var error = menu.getError();
+        if (error != null) {
+            guiGraphics.drawCenteredString(font, error, 176 / 2, titleLabelY + 12, ChatFormatting.RED.getColor());
+        }
         guiGraphics.drawString(font,
                 Component.translatable("gui.waystones.waystone_settings.visibility." + visibilityButton.getVisibility().name().toLowerCase(Locale.ROOT)),
                 24,
@@ -145,7 +156,6 @@ public class WaystoneEditScreen extends AbstractContainerScreen<WaystoneEditMenu
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
-        renderBlurredBackground(v);
     }
 
     @Override

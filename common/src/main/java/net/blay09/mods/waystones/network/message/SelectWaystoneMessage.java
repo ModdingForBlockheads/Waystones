@@ -1,9 +1,7 @@
 package net.blay09.mods.waystones.network.message;
 
 import net.blay09.mods.waystones.Waystones;
-import net.blay09.mods.waystones.api.TeleportFlags;
 import net.blay09.mods.waystones.api.WaystonesAPI;
-import net.blay09.mods.waystones.core.WaystoneTeleportManager;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
 import net.blay09.mods.waystones.core.WaystoneProxy;
 import net.minecraft.ChatFormatting;

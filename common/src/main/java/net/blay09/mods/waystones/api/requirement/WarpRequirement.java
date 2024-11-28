@@ -12,6 +12,7 @@ public interface WarpRequirement {
 
     void rollback(Player player);
 
+
     void appendHoverText(Player player, List<Component> tooltip);
 
     default boolean isEmpty() {

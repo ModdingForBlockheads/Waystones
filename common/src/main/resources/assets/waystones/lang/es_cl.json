@@ -1,8 +1,8 @@
 {
   "itemGroup.waystones.waystones": "Waystones",
-  "block.waystones.waystone": "Waystone",
-  "block.waystones.mossy_waystone": "Waystone musgosa",
-  "block.waystones.sandy_waystone": "Waystone de arena",
+  "item.waystones.waystone": "Waystone",
+  "item.waystones.mossy_waystone": "Waystone musgosa",
+  "item.waystones.sandy_waystone": "Waystone de arena",
   "item.waystones.blackstone_waystone": "Waystone negra",
   "item.waystones.deepslate_waystone": "Waystone de pizarra abismal",
   "item.waystones.end_stone_waystone": "Waystone de end",

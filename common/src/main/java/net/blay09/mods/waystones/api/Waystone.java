@@ -48,5 +48,7 @@ public interface Waystone {
         return false;
     }
 
+    boolean isTransient();
+
     WaystoneVisibility getVisibility();
 }

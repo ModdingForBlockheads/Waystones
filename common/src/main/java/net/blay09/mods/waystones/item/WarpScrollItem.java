@@ -48,8 +48,9 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
                 }
 
                 @Override
-                public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
-                    return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet());
+                public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
+                    return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet())
+                            .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
                 }
 
 

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "O": {
-      "item": "minecraft:obsidian"
-    },
-    "S": {
-      "item": "minecraft:stone_bricks"
-    },
-    "W": {
-      "item": "waystones:warp_stone"
-    }
+    "O": "minecraft:obsidian",
+    "S": "minecraft:stone_bricks",
+    "W": "waystones:warp_stone"
   },
   "pattern": [
     " S ",

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": {
-      "item": "minecraft:amethyst_shard"
-    },
-    "E": {
-      "item": "minecraft:ender_pearl"
-    },
-    "G": {
-      "tag": "c:gems/emerald"
-    }
+    "D": "minecraft:amethyst_shard",
+    "E": "minecraft:ender_pearl",
+    "G": "#c:gems/emerald"
   },
   "pattern": [
     "DED",

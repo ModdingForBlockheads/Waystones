@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -56,12 +57,7 @@ public class RemoveWaystoneButton extends Button implements ITooltipProvider {
         active = !shiftGuard && shiftDown;
 
         if (mouseY >= visibleRegionStart && mouseY < visibleRegionStart + visibleRegionHeight) {
-            if (isHovered && active) {
-                guiGraphics.setColor(1f, 1f, 1f, 1f);
-            } else {
-                guiGraphics.setColor(0.5f, 0.5f, 0.5f, 0.5f);
-            }
-            guiGraphics.blitSprite(CANCEL_SPRITE, getX(), getY(), 13, 13);
+            guiGraphics.blitSprite(RenderType::guiTextured, CANCEL_SPRITE, getX(), getY(), 13, 13, isHovered && active ? 0xFFFFFFFF : 0x80808080);
         }
     }
 
