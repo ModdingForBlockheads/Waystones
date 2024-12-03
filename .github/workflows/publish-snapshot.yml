@@ -19,14 +19,15 @@ jobs:
           script: |
             const fs = require('fs');
             const settingsGradle = fs.readFileSync('settings.gradle', 'utf8');
-            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*["']([^"']+)["']\s*\)/gm;
-            const includes = [...settingsGradle.matchAll(includePattern)].map(match => match[1]);
+            const includePattern = /^(?!\s*\/\/)\s*include\s*\(\s*(['"]([^'"]+)['"](?:,\s*['"]([^'"]+)['"])*\s*)\)/gm;
+            const includes = [...settingsGradle.matchAll(includePattern)]
+              .flatMap(match => match[0].match(/['"]([^'"]+)['"]/g).map(item => item.replace(/['"]/g, '')));
             const includeFabric = includes.includes('fabric');
             const includeForge = includes.includes('forge');
             const includeNeoForge = includes.includes('neoforge');
             return {
               loader: ['common', includeFabric ? 'fabric' : false, includeForge ? 'forge' : false, includeNeoForge ? 'neoforge' : false].filter(Boolean),
-            }
+            };
   publish-snapshot:
     runs-on: ubuntu-latest
     strategy:
