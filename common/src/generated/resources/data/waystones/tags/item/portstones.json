@@ -1,0 +1,20 @@
+{
+  "values": [
+    "waystones:white_portstone",
+    "waystones:orange_portstone",
+    "waystones:magenta_portstone",
+    "waystones:light_blue_portstone",
+    "waystones:yellow_portstone",
+    "waystones:lime_portstone",
+    "waystones:pink_portstone",
+    "waystones:gray_portstone",
+    "waystones:light_gray_portstone",
+    "waystones:cyan_portstone",
+    "waystones:purple_portstone",
+    "waystones:blue_portstone",
+    "waystones:brown_portstone",
+    "waystones:green_portstone",
+    "waystones:red_portstone",
+    "waystones:black_portstone"
+  ]
+}

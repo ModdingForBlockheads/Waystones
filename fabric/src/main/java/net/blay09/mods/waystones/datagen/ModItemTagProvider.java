@@ -2,6 +2,7 @@ package net.blay09.mods.waystones.datagen;
 
 import net.blay09.mods.waystones.block.ModBlocks;
 import net.blay09.mods.waystones.item.ModItems;
+import net.blay09.mods.waystones.tag.ModBlockTags;
 import net.blay09.mods.waystones.tag.ModItemTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
@@ -27,7 +28,10 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
         getOrCreateTagBuilder(ModItemTags.RETURN_SCROLLS).add(ModItems.returnScroll);
         getOrCreateTagBuilder(ModItemTags.BOUND_SCROLLS).add(ModItems.boundScroll);
         getOrCreateTagBuilder(ModItemTags.WARP_STONES).add(ModItems.warpStone);
-        getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard, ModItems.crumblingAttunedShard, ModItems.dormantShard, ModItems.deepslateShard);
+        getOrCreateTagBuilder(ModItemTags.WARP_SHARDS).add(ModItems.attunedShard,
+                ModItems.crumblingAttunedShard,
+                ModItems.dormantShard,
+                ModItems.deepslateShard);
         getOrCreateTagBuilder(ModItemTags.SINGLE_USE_WARP_SHARDS).add(ModItems.crumblingAttunedShard);
         getOrCreateTagBuilder(ModItemTags.WAYSTONES).add(ModBlocks.waystone.asItem(),
                 ModBlocks.mossyWaystone.asItem(),
@@ -35,9 +39,15 @@ public class ModItemTagProvider extends FabricTagProvider<Item> {
                 ModBlocks.deepslateWaystone.asItem(),
                 ModBlocks.blackstoneWaystone.asItem(),
                 ModBlocks.endStoneWaystone.asItem());
-        FabricTagProvider<Item>.FabricTagBuilder sharestonesTag = getOrCreateTagBuilder(ModItemTags.SHARESTONES);
+
+        final var sharestonesTag = getOrCreateTagBuilder(ModItemTags.SHARESTONES);
         for (Block sharestone : ModBlocks.sharestones) {
             sharestonesTag.add(sharestone.asItem());
+        }
+
+        final var portstonesBuilder = getOrCreateTagBuilder(ModItemTags.PORTSTONES);
+        for (final var portstone : ModBlocks.portstones) {
+            portstonesBuilder.add(portstone.asItem());
         }
     }
 }
