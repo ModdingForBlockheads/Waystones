@@ -3,7 +3,6 @@
   "minVersion": "0.8",
   "package": "net.blay09.mods.waystones.forge.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "waystones.refmap.json",
   "mixins": [
   ],
   "client": [

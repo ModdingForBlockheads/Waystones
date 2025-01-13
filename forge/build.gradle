@@ -7,8 +7,6 @@ plugins {
 }
 
 mixin {
-    add(sourceSets.main, "${mod_id}.refmap.json")
-
     config("${mod_id}.mixins.json")
     config("${mod_id}.forge.mixins.json")
 }
@@ -119,4 +117,10 @@ modrinth {
     dependencies {
         required.project "balm"
     }
+}
+
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }

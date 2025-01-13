@@ -8,8 +8,8 @@ dependencies {
     compileOnly("curse.maven:the-one-probe-245211:$theoneprobe_version")
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:$bluemap_version"
     compileOnly "us.dynmap:DynmapCoreAPI:$dynmap_version"
-    runtimeOnly "mysticdrew:common-networking-forge:$journeymap_networking_version"
-    runtimeOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}"
+    compileOnly "mysticdrew:common-networking-forge:$journeymap_networking_version"
+    compileOnly "curse.maven:journeymap-${project.journeymap_project_id}:${project.journeymap_forge_file_id}"
 }
 
 configurations {
