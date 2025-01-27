@@ -1,0 +1,30 @@
+name: manage-labels
+on:
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: 'Dry run (no changes, log only)'
+        required: false
+        default: true
+        type: boolean
+      remove_missing:
+        description: 'Remove labels not present in the source data'
+        required: false
+        default: false
+        type: boolean
+jobs:
+  manage-labels:
+    permissions:
+      contents: read
+      issues: write
+    runs-on: ubuntu-latest
+    name: manage-labels
+    steps:
+      - uses: actions/checkout@v2
+      - uses: TwelveIterations/manage-labels@main
+        with:
+          dry: ${{ inputs.dry }}
+          remove_missing: ${{ inputs.remove_missing }}
+          source: https://raw.githubusercontent.com/TwelveIterationMods/.github/refs/heads/main/labels.yaml
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
