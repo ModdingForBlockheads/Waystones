@@ -1,0 +1,28 @@
+name: Label Issues
+on:
+  issues:
+    types: [ opened ]
+jobs:
+  label-component:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    strategy:
+      matrix:
+        template: [ report-a-bug.yml ]
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+
+      - name: Parse issue form
+        uses: TwelveIterations/github-issue-parser@main
+        id: issue-parser
+        with:
+          template-path: https://raw.githubusercontent.com/TwelveIterationMods/.github/refs/heads/main/.github/ISSUE_TEMPLATE/${{ matrix.template }}
+
+      - name: Set labels based on component field
+        uses: redhat-plumbers-in-action/advanced-issue-labeler@d498805e5c7c0658e336948b3363480bcfd68da6
+        with:
+          issue-form: ${{ steps.issue-parser.outputs.jsonString }}
+          template: ${{ matrix.template }}
+          token: ${{ secrets.GITHUB_TOKEN }}
