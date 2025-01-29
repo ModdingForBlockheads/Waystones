@@ -37,6 +37,9 @@ public class RequirementRegistry {
     public record FloatParameter(float value) {
     }
 
+    public record StringParameter(String value) {
+    }
+
     public record IdParameter(ResourceLocation value) {
     }
 
@@ -222,15 +225,23 @@ public class RequirementRegistry {
         registerSerializer(NoParameter.class, it -> NoParameter.INSTANCE);
         registerSerializer(IntParameter.class, it -> new IntParameter(Integer.parseInt(it)));
         registerSerializer(FloatParameter.class, it -> new FloatParameter(Float.parseFloat(it)));
+        registerSerializer(StringParameter.class, StringParameter::new);
         registerSerializer(IdParameter.class, it -> new IdParameter(ResourceLocation.parse(it)));
         registerSerializer(WaystonesIdParameter.class, it -> new WaystonesIdParameter(RequirementModifierParser.waystonesResourceLocation(it)));
-        registerSerializer(ComponentParameter.class, it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
+        registerSerializer(ComponentParameter.class,
+                it -> new ComponentParameter(it.startsWith("$") ? Component.translatable(it.substring(1)) : Component.literal(it)));
         registerDefaultSerializer(VariableScaledParameter.class);
         registerDefaultSerializer(CooldownParameter.class);
         registerDefaultSerializer(VariableScaledCooldownParameter.class);
         registerDefaultSerializer(ItemParameter.class);
         registerDefaultSerializer(VariableScaledItemParameter.class);
 
+        registerConditionResolver("source_name_equals",
+                StringParameter.class,
+                (context, parameters) -> context.getFromWaystone().map(waystone -> parameters.value().equals(waystone.getName().getString())).orElse(false));
+        registerConditionResolver("source_name_contains",
+                StringParameter.class,
+                (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getName().getString().contains(parameters.value())).orElse(false));
         registerConditionResolver("is_interdimensional", NoParameter.class, (context, parameters) -> context.isDimensionalTeleport());
         registerConditionResolver("source_is_warp_plate", NoParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WARP_PLATE)).orElse(false));
@@ -253,6 +264,12 @@ public class RequirementRegistry {
         registerConditionResolver("source_is_return_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.RETURN_SCROLLS));
         registerConditionResolver("source_is_warp_scroll", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_SCROLLS));
         registerConditionResolver("source_is_warp_stone", NoParameter.class, (context, parameters) -> context.getWarpItem().is(ModItemTags.WARP_STONES));
+        registerConditionResolver("target_name_equals",
+                StringParameter.class,
+                (context, parameters) -> parameters.value().equals(context.getTargetWaystone().getName().getString()));
+        registerConditionResolver("target_name_contains",
+                StringParameter.class,
+                (context, parameters) -> context.getTargetWaystone().getName().getString().contains(parameters.value()));
         registerConditionResolver("target_is_warp_plate",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WARP_PLATE));
