@@ -1,1 +1,4 @@
-- Updated to Minecraft 1.21.4
+- Added (source|target)_is_(color)_sharestone conditions for warp requirements
+- Added (source|target)_name_equals and not_(source|target)_name_equals conditions for warp requirements
+- Added (source|target)_name_contains and not_(source|target)_name_contains conditions for warp requirements
+- Added waystones:portstones item tag
