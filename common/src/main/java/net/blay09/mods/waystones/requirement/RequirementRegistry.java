@@ -240,6 +240,11 @@ public class RequirementRegistry {
                 (context, parameters) -> context.getFromWaystone().map(waystone -> waystone.getWaystoneType().equals(WaystoneTypes.WAYSTONE)).orElse(false));
         registerConditionResolver("source_is_sharestone", NoParameter.class,
                 (context, parameters) -> context.getFromWaystone().map(waystone -> WaystoneTypes.isSharestone(waystone.getWaystoneType())).orElse(false));
+        for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
+            registerConditionResolver("source_is_" + sharestoneType.getPath(),
+                    NoParameter.class,
+                    (context, parameters) -> sharestoneType.equals(context.getTargetWaystone().getWaystoneType()));
+        }
         registerConditionResolver("source_is_inventory_button",
                 NoParameter.class,
                 (context, parameters) -> context.getFlags().contains(TeleportFlags.INVENTORY_BUTTON));
@@ -257,6 +262,11 @@ public class RequirementRegistry {
         registerConditionResolver("target_is_sharestone",
                 NoParameter.class,
                 (context, parameters) -> WaystoneTypes.isSharestone(context.getTargetWaystone().getWaystoneType()));
+        for (final var sharestoneType : WaystoneTypes.SHARESTONES) {
+            registerConditionResolver("target_is_" + sharestoneType.getPath(),
+                    NoParameter.class,
+                    (context, parameters) -> sharestoneType.equals(context.getTargetWaystone().getWaystoneType()));
+        }
         registerConditionResolver("target_is_waystone",
                 NoParameter.class,
                 (context, parameters) -> context.getTargetWaystone().getWaystoneType().equals(WaystoneTypes.WAYSTONE));
