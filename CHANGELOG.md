@@ -1,1 +1,1 @@
-- Fixed crash when generating wild waystones due to incorrect default state
+- Added ruleset to prevent generated waystones being broken (if enabled in Unbreakables mod)
