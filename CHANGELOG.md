@@ -1,3 +1,1 @@
-- Added (source|target)_is_(color)_sharestone conditions for warp requirements
-- Added (source|target)_name_equals and not_(source|target)_name_equals conditions for warp requirements
-- Added (source|target)_name_contains and not_(source|target)_name_contains conditions for warp requirements
+- Added ruleset to prevent generated waystones being broken (if enabled in Unbreakables mod)
