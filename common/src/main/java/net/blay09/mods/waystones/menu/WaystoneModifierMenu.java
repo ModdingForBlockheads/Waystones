@@ -4,6 +4,7 @@ import net.blay09.mods.waystones.api.Waystone;
 import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -37,8 +38,7 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        BlockPos pos = blockEntity.getBlockPos();
-        return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
+        return Container.stillValidBlockEntity(blockEntity, player);
     }
 
     @Override
