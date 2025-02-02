@@ -1,1 +1,1 @@
-- Added ruleset to prevent generated waystones being broken (if enabled in Unbreakables mod)
+- Fixed warp modifiers screen not closing when no longer valid
