@@ -1,8 +1,0 @@
-name: prepare-changelog
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    uses: TwelveIterationMods/Workflows/.github/workflows/prepare-changelog.yml@main
-    secrets: inherit

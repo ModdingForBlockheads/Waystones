@@ -6,5 +6,25 @@ on:
 
 jobs:
   build:
-    uses: TwelveIterationMods/Workflows/.github/workflows/build.yml@main
-    secrets: inherit
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        loader: [fabric, forge]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Build
+        run: ./gradlew :${{ matrix.loader }}:build
+        env:
+          GPR_USERNAME: ${{secrets.GPR_USERNAME}}
+          GPR_TOKEN: ${{secrets.GPR_TOKEN}}
+          GPR_BUILD_NUMBER: ${{github.run_number}}

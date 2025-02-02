@@ -1,0 +1,78 @@
+name: publish-release
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'The bump in version for this release'
+        required: true
+        type: choice
+        default: patch
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      ref: v${{ steps.bump-version.outputs.version }}
+      version: ${{ steps.bump-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Extracting version from properties
+        shell: bash
+        run: echo "version=$(cat gradle.properties | grep -w "\bmod_version" | cut -d= -f2)" >> $GITHUB_OUTPUT
+        id: extract-version
+      - name: Bumping version
+        uses: TwelveIterationMods/bump-version@v1
+        with:
+          version: ${{ steps.extract-version.outputs.version }}
+          bump: ${{ inputs.bump }}
+        id: bump-version
+      - name: Updating version properties
+        run: |
+          sed -i "s/^\s*mod_version\s*=.*/mod_version = ${{ steps.bump-version.outputs.version }}/g" gradle.properties
+          git config user.name "GitHub Actions"
+          git config user.email "<>"
+          git commit -am "Set version to ${{ steps.bump-version.outputs.version }}"
+          git push origin ${BRANCH_NAME}
+          git tag -a "v${{ steps.bump-version.outputs.version }}" -m "Release ${{ steps.bump-version.outputs.version }}"
+          git push origin "v${{ steps.bump-version.outputs.version }}"
+        shell: bash
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  publish-release:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        loader: [ shared, fabric, forge ]
+        site: [ curseforge, modrinth, publish ]
+        exclude:
+          - loader: shared
+            site: curseforge
+          - loader: shared
+            site: modrinth
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.create-release.outputs.ref }}
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Publish
+        run: ./gradlew :${{ matrix.loader }}:${{ matrix.site }} '-Pversion=${{needs.create-release.outputs.version}}' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
+        env:
+          CURSEFORGE_TOKEN: ${{secrets.CURSEFORGE_TOKEN}}
+          MODRINTH_TOKEN: ${{secrets.MODRINTH_TOKEN}}
+    needs: create-release

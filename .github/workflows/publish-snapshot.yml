@@ -1,0 +1,38 @@
+name: publish-snapshot
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish-snapshot:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    strategy:
+      matrix:
+        loader: [common, fabric, forge]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Extracting version from properties
+        shell: bash
+        run: echo "version=$(cat gradle.properties | grep -w "\bmod_version" | cut -d= -f2)" >> $GITHUB_OUTPUT
+        id: extract-version
+      - name: Bumping version
+        uses: TwelveIterationMods/bump-version@v1
+        with:
+          version: ${{ steps.extract-version.outputs.version }}
+          bump: patch
+        id: bump-version
+      - name: Publish
+        run: ./gradlew :${{ matrix.loader }}:publish '-Pversion=${{ steps.bump-version.outputs.version }}-SNAPSHOT' '-PtwelveIterationsNexusUsername=${{ secrets.NEXUS_USER }}' '-PtwelveIterationsNexusPassword=${{ secrets.NEXUS_PASSWORD }}'
