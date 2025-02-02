@@ -57,14 +57,6 @@ publishing {
             version = project.version + (!project.version.endsWith("SNAPSHOT") ? "+" + minecraft_version : "")
 
             artifact jar
-
-            artifact sourcesJar {
-                classifier 'sources'
-            }
-
-            artifact project.javadocJar {
-                classifier 'javadoc'
-            }
         }
     }
 
