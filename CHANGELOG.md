@@ -1,3 +1,1 @@
-- Fixed warp stone cooldown getting corrupted into millions of seconds
-- Fixed crash when setting scroll charge time to 0
-- Fixed buckets not having any effect on waterlogged waystones
+- Fixed warp modifiers screen not closing when no longer valid
