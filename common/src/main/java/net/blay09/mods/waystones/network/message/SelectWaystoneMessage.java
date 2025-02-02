@@ -47,6 +47,7 @@ public class SelectWaystoneMessage implements CustomPacketPayload {
 
         WaystonesAPI.createDefaultTeleportContext(player, waystone, it -> {
                     it.setFromWaystone(selectionMenu.getWaystoneFrom());
+                    it.setWarpItem(selectionMenu.getWarpItem());
                     it.addFlags(selectionMenu.getFlags());
                 })
                 .ifLeft(WaystonesAPI::tryTeleport)
