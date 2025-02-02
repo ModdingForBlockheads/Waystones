@@ -2,7 +2,7 @@ package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
 import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -44,8 +44,7 @@ public class WarpPlateContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        BlockPos pos = blockEntity.getBlockPos();
-        return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
+        return Container.stillValidBlockEntity(blockEntity, player);
     }
 
     public float getAttunementProgress() {
@@ -63,14 +62,12 @@ public class WarpPlateContainer extends AbstractContainerMenu {
                 if (!this.moveItemStackTo(slotStack, 5, this.slots.size(), true)) {
                     return ItemStack.EMPTY;
                 }
-            }
-            else {
+            } else {
                 if (!getSlot(0).hasItem()) {
                     if (!this.moveItemStackTo(slotStack.split(1), 0, 1, false)) {
                         return ItemStack.EMPTY;
                     }
-                }
-                else {
+                } else {
                     if (!this.moveItemStackTo(slotStack, 1, 5, false)) {
                         return ItemStack.EMPTY;
                     }
