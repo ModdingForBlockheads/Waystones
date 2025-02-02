@@ -41,7 +41,7 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
         if (!world.isClientSide && entity instanceof ServerPlayer player) {
             final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(((ServerPlayer) entity), new BalmMenuProvider<Collection<Waystone>>() {
+            Balm.getNetworking().openGui(((ServerPlayer) entity), new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");
@@ -50,18 +50,19 @@ public class WarpScrollItem extends ScrollItemBase implements IResetUseOnDamage 
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory inventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpScrollSelection.get(), null, windowId, waystones, Collections.emptySet())
+                            .withWarpItem(itemStack)
                             .setPostTeleportHandler(context -> itemStack.consume(1, inventory.player));
                 }
 
 
                 @Override
-                public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return waystones;
+                public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
+                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack);
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
-                    return WaystoneImpl.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.ItemInitiatedWaystoneMenuData> getScreenStreamCodec() {
+                    return ModMenus.ItemInitiatedWaystoneMenuData.STREAM_CODEC;
                 }
             });
         }

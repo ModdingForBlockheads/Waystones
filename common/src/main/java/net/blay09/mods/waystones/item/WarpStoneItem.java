@@ -133,7 +133,7 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
             final var hand = player.getUsedItemHand();
             final var waystones = PlayerWaystoneManager.getTargetsForItem(player, itemStack);
             PlayerWaystoneManager.ensureSortingIndex(player, waystones);
-            Balm.getNetworking().openGui(player, new BalmMenuProvider<Collection<Waystone>>() {
+            Balm.getNetworking().openGui(player, new BalmMenuProvider<ModMenus.ItemInitiatedWaystoneMenuData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("container.waystones.waystone_selection");
@@ -142,17 +142,18 @@ public class WarpStoneItem extends Item implements IResetUseOnDamage {
                 @Override
                 public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player player) {
                     return new WaystoneSelectionMenu(ModMenus.warpStoneSelection.get(), null, windowId, waystones, Collections.emptySet())
+                            .withWarpItem(itemStack)
                             .setPostTeleportHandler(context -> itemStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(hand)));
                 }
 
                 @Override
-                public Collection<Waystone> getScreenOpeningData(ServerPlayer serverPlayer) {
-                    return waystones;
+                public ModMenus.ItemInitiatedWaystoneMenuData getScreenOpeningData(ServerPlayer serverPlayer) {
+                    return new ModMenus.ItemInitiatedWaystoneMenuData(waystones, itemStack);
                 }
 
                 @Override
-                public StreamCodec<RegistryFriendlyByteBuf, Collection<Waystone>> getScreenStreamCodec() {
-                    return WaystoneImpl.LIST_STREAM_CODEC;
+                public StreamCodec<RegistryFriendlyByteBuf, ModMenus.ItemInitiatedWaystoneMenuData> getScreenStreamCodec() {
+                    return ModMenus.ItemInitiatedWaystoneMenuData.STREAM_CODEC;
                 }
             });
         }
