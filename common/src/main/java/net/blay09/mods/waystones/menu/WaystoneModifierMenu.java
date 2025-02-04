@@ -5,6 +5,7 @@ import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,17 +14,23 @@ import net.minecraft.world.item.ItemStack;
 
 public class WaystoneModifierMenu extends AbstractContainerMenu {
 
-    private final WaystoneBlockEntityBase blockEntity;
+    private final Container container;
+    private final Waystone waystone;
 
-    public WaystoneModifierMenu(int windowId, WaystoneBlockEntityBase warpPlate, Inventory playerInventory) {
+    public WaystoneModifierMenu(int windowId, Inventory playerInventory, Waystone waystone) {
+        this(windowId, playerInventory, waystone, new SimpleContainer(5));
+    }
+
+    public WaystoneModifierMenu(int windowId, Inventory playerInventory, Waystone waystone, Container container) {
         super(ModMenus.waystoneModifiers.get(), windowId);
-        this.blockEntity = warpPlate;
+        this.container = container;
+        this.waystone = waystone;
 
-        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 0, 80, 45));
-        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 1, 80, 17));
-        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 2, 108, 45));
-        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 3, 80, 73));
-        addSlot(new WaystoneModifierSlot(warpPlate.getContainer(), 4, 52, 45));
+        addSlot(new WaystoneModifierSlot(container, 0, 80, 45));
+        addSlot(new WaystoneModifierSlot(container, 1, 80, 17));
+        addSlot(new WaystoneModifierSlot(container, 2, 108, 45));
+        addSlot(new WaystoneModifierSlot(container, 3, 80, 73));
+        addSlot(new WaystoneModifierSlot(container, 4, 52, 45));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -38,7 +45,7 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return Container.stillValidBlockEntity(blockEntity, player);
+        return container.stillValid(player);
     }
 
     @Override
@@ -77,6 +84,6 @@ public class WaystoneModifierMenu extends AbstractContainerMenu {
     }
 
     public Waystone getWaystone() {
-        return blockEntity.getWaystone();
+        return waystone;
     }
 }

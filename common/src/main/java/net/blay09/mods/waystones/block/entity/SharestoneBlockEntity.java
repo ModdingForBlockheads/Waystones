@@ -7,7 +7,6 @@ import net.blay09.mods.waystones.core.*;
 import net.blay09.mods.waystones.api.WaystoneTypes;
 import net.blay09.mods.waystones.menu.ModMenus;
 import net.blay09.mods.waystones.menu.WaystoneSelectionMenu;
-import net.blay09.mods.waystones.menu.WaystoneEditMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -68,7 +67,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
 
             @Override
             public WaystoneSelectionMenu.Data getScreenOpeningData(ServerPlayer serverPlayer) {
-                return new WaystoneSelectionMenu.Data(worldPosition, PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
+                return new WaystoneSelectionMenu.Data(getWaystone(), PlayerWaystoneManager.getTargetsForWaystone(serverPlayer, getWaystone()));
             }
 
             @Override
