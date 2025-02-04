@@ -1,2 +1,1 @@
-- Fixed warp scroll and warp stone conditions not working in warp requirements
-- Fixed warp modifiers screen not closing when no longer valid
+- Fixed potential crash when opening waystone menus
