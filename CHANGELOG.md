@@ -1,1 +1,1 @@
-- Fixed warp modifiers screen not closing when no longer valid
+- Fixed potential crash when opening waystone menus
