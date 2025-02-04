@@ -1,7 +1,6 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.Waystone;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntityBase;
 import net.blay09.mods.waystones.core.WaystoneImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -9,7 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -35,16 +35,20 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
             WaystoneEditMenu.Data::new);
 
     private final Waystone waystone;
-    private final WaystoneBlockEntityBase blockEntity;
     private final int modifierCount;
     private final Component error;
+    private final Container container;
 
-    public WaystoneEditMenu(int windowId, Waystone waystone, WaystoneBlockEntityBase blockEntity, Inventory playerInventory, int modifierCount, Component error) {
+    public WaystoneEditMenu(int windowId, Waystone waystone, int modifierCount, Component error) {
+        this(windowId, waystone, modifierCount, error, new SimpleContainer(5));
+    }
+
+    public WaystoneEditMenu(int windowId, Waystone waystone, int modifierCount, Component error, Container container) {
         super(ModMenus.waystoneSettings.get(), windowId);
         this.waystone = waystone;
-        this.blockEntity = blockEntity;
         this.modifierCount = modifierCount;
         this.error = error;
+        this.container = container;
     }
 
     @Override
@@ -82,8 +86,7 @@ public class WaystoneEditMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        BlockPos pos = blockEntity.getBlockPos();
-        return player.distanceToSqr((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5) <= 64;
+        return container.stillValid(player);
     }
 
     public Waystone getWaystone() {

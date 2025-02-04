@@ -19,12 +19,12 @@ import java.util.function.Consumer;
 
 public class WaystoneSelectionMenu extends AbstractContainerMenu {
 
-    public record Data(BlockPos pos, Collection<Waystone> waystones) {
+    public record Data(Waystone fromWaystone, Collection<Waystone> waystones) {
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-            BlockPos.STREAM_CODEC.cast(),
-            Data::pos,
+            WaystoneImpl.STREAM_CODEC,
+            Data::fromWaystone,
             WaystoneImpl.LIST_STREAM_CODEC,
             Data::waystones,
             Data::new);

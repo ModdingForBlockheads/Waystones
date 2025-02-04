@@ -75,6 +75,11 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
         public void setChanged() {
             onInventoryChanged();
         }
+
+        @Override
+        public boolean stillValid(Player player) {
+            return Container.stillValidBlockEntity(WaystoneBlockEntityBase.this, player);
+        }
     };
 
     protected void onInventoryChanged() {
@@ -269,10 +274,9 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
                 final var error = WaystonePermissionManager.mayEditWaystone(player, player.level(), getWaystone());
                 return new WaystoneEditMenu(i,
                         getWaystone(),
-                        WaystoneBlockEntityBase.this,
-                        playerInventory,
                         getModifierCount(),
-                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable).orElse(null));
+                        error.map(WaystoneEditError::getTranslationKey).map(Component::translatable).orElse(null),
+                        getContainer());
             }
 
             @Override
@@ -289,7 +293,7 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
     }
 
     public Optional<MenuProvider> getModifierMenuProvider() {
-        return Optional.of(new BalmMenuProvider<BlockPos>() {
+        return Optional.of(new BalmMenuProvider<Waystone>() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("container.waystones.waystone_modifiers");
@@ -297,17 +301,17 @@ public abstract class WaystoneBlockEntityBase extends BalmBlockEntity implements
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new WaystoneModifierMenu(i, WaystoneBlockEntityBase.this, playerInventory);
+                return new WaystoneModifierMenu(i, playerInventory, getWaystone(), getContainer());
             }
 
             @Override
-            public BlockPos getScreenOpeningData(ServerPlayer serverPlayer) {
-                return worldPosition;
+            public Waystone getScreenOpeningData(ServerPlayer serverPlayer) {
+                return getWaystone();
             }
 
             @Override
-            public StreamCodec<RegistryFriendlyByteBuf, BlockPos> getScreenStreamCodec() {
-                return BlockPos.STREAM_CODEC.cast();
+            public StreamCodec<RegistryFriendlyByteBuf, Waystone> getScreenStreamCodec() {
+                return WaystoneImpl.STREAM_CODEC;
             }
         });
     }
