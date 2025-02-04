@@ -4,19 +4,13 @@ import net.blay09.mods.balm.api.DeferredObject;
 import net.blay09.mods.balm.api.menu.BalmMenus;
 import net.blay09.mods.waystones.Waystones;
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.block.entity.SharestoneBlockEntity;
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.blay09.mods.waystones.block.entity.WaystoneBlockEntity;
 import net.blay09.mods.waystones.core.WarpMode;
 import net.blay09.mods.waystones.core.Waystone;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ModMenus {
     public static DeferredObject<MenuType<WaystoneSelectionMenu>> waystoneSelection;
@@ -26,49 +20,32 @@ public class ModMenus {
 
     public static void initialize(BalmMenus menus) {
         waystoneSelection = menus.registerMenu(id("waystone_selection"), (syncId, inventory, buf) -> {
-            WarpMode warpMode = WarpMode.values[buf.readByte()];
+            final var warpMode = WarpMode.values[buf.readByte()];
             IWaystone fromWaystone = null;
             if (warpMode == WarpMode.WAYSTONE_TO_WAYSTONE) {
-                BlockPos pos = buf.readBlockPos();
-                BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-                if (blockEntity instanceof WaystoneBlockEntity) {
-                    fromWaystone = ((WaystoneBlockEntity) blockEntity).getWaystone();
-                }
+                fromWaystone = Waystone.read(buf);
             }
 
             return WaystoneSelectionMenu.createWaystoneSelection(syncId, inventory.player, warpMode, fromWaystone);
         });
 
         sharestoneSelection = menus.registerMenu(id("sharestone_selection"), (syncId, inventory, buf) -> {
-            BlockPos pos = buf.readBlockPos();
-            int count = buf.readShort();
-            List<IWaystone> waystones = new ArrayList<>(count);
+            final var fromWaystone = Waystone.read(buf);
+            final var count = buf.readShort();
+            final var waystones = new ArrayList<IWaystone>(count);
             for (int i = 0; i < count; i++) {
                 waystones.add(Waystone.read(buf));
             }
-
-            BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-            if (blockEntity instanceof SharestoneBlockEntity) {
-                IWaystone fromWaystone = ((SharestoneBlockEntity) blockEntity).getWaystone();
-                return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, syncId, waystones);
-            }
-
-            return null;
+            return new WaystoneSelectionMenu(ModMenus.sharestoneSelection.get(), WarpMode.SHARESTONE_TO_SHARESTONE, fromWaystone, syncId, waystones);
         });
 
         warpPlate = menus.registerMenu(id("warp_plate"), (windowId, inv, data) -> {
-            BlockPos pos = data.readBlockPos();
-
-            BlockEntity blockEntity = inv.player.level().getBlockEntity(pos);
-            if (blockEntity instanceof WarpPlateBlockEntity warpPlate) {
-                return new WarpPlateContainer(windowId, warpPlate, warpPlate.getContainerData(), inv);
-            }
-
-            return null;
+            final var waystone = Waystone.read(data);
+            return new WarpPlateContainer(windowId, inv, waystone);
         });
 
         waystoneSettings = menus.registerMenu(id("waystone_settings"), (windowId, inv, data) -> {
-            IWaystone waystone = Waystone.read(data);
+            final var waystone = Waystone.read(data);
             return new WaystoneSettingsMenu(waystoneSettings.get(), waystone, windowId);
         });
     }

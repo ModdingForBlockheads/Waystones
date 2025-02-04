@@ -44,7 +44,7 @@ public class WaystoneBlockEntity extends WaystoneBlockEntityBase {
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                 buf.writeByte(WarpMode.WAYSTONE_TO_WAYSTONE.ordinal());
-                buf.writeBlockPos(worldPosition);
+                Waystone.write(buf, getWaystone());
             }
         };
     }

@@ -1,33 +1,39 @@
 package net.blay09.mods.waystones.menu;
 
 import net.blay09.mods.waystones.api.IWaystone;
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class WarpPlateContainer extends AbstractContainerMenu {
 
-    private final WarpPlateBlockEntity blockEntity;
+    private final IWaystone waystone;
+    private final Container container;
     private final ContainerData containerData;
 
-    public WarpPlateContainer(int windowId, WarpPlateBlockEntity warpPlate, ContainerData containerData, Inventory playerInventory) {
+    public WarpPlateContainer(int windowId, Inventory playerInventory, IWaystone waystone) {
+        this(windowId, playerInventory, waystone, new SimpleContainer(5), new SimpleContainerData(3));
+    }
+
+    public WarpPlateContainer(int windowId, Inventory playerInventory, IWaystone waystone, Container container, ContainerData containerData) {
         super(ModMenus.warpPlate.get(), windowId);
-        this.blockEntity = warpPlate;
+        this.waystone = waystone;
+        this.container = container;
         this.containerData = containerData;
-        warpPlate.markReadyForAttunement();
 
         checkContainerDataCount(containerData, 1);
 
-        addSlot(new WarpPlateAttunementSlot(warpPlate, 0, 80, 45));
-        addSlot(new WarpPlateAttunementSlot(warpPlate, 1, 80, 17));
-        addSlot(new WarpPlateAttunementSlot(warpPlate, 2, 108, 45));
-        addSlot(new WarpPlateAttunementSlot(warpPlate, 3, 80, 73));
-        addSlot(new WarpPlateAttunementSlot(warpPlate, 4, 52, 45));
+        addSlot(new WarpPlateAttunementSlot(container, 0, 80, 45, this::isCompletedFirstAttunement));
+        addSlot(new WarpPlateAttunementSlot(container, 1, 80, 17, this::isCompletedFirstAttunement));
+        addSlot(new WarpPlateAttunementSlot(container, 2, 108, 45, this::isCompletedFirstAttunement));
+        addSlot(new WarpPlateAttunementSlot(container, 3, 80, 73, this::isCompletedFirstAttunement));
+        addSlot(new WarpPlateAttunementSlot(container, 4, 52, 45, this::isCompletedFirstAttunement));
 
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -42,13 +48,17 @@ public class WarpPlateContainer extends AbstractContainerMenu {
         addDataSlots(containerData);
     }
 
+    private boolean isCompletedFirstAttunement() {
+        return containerData.get(2) == 1;
+    }
+
     @Override
     public boolean stillValid(Player player) {
-        return Container.stillValidBlockEntity(blockEntity, player);
+        return container.stillValid(player);
     }
 
     public float getAttunementProgress() {
-        return containerData.get(0) / (float) blockEntity.getMaxAttunementTicks();
+        return containerData.get(0) / (float) containerData.get(1);
     }
 
     @Override
@@ -85,6 +95,6 @@ public class WarpPlateContainer extends AbstractContainerMenu {
     }
 
     public IWaystone getWaystone() {
-        return blockEntity.getWaystone();
+        return waystone;
     }
 }

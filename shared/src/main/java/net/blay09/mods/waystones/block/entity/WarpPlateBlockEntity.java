@@ -1,6 +1,7 @@
 package net.blay09.mods.waystones.block.entity;
 
 import net.blay09.mods.balm.api.Balm;
+import net.blay09.mods.balm.api.container.ContainerUtils;
 import net.blay09.mods.balm.api.container.ImplementedContainer;
 import net.blay09.mods.balm.api.menu.BalmMenuProvider;
 import net.blay09.mods.waystones.Waystones;
@@ -28,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -72,17 +74,30 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
         dataAccess = new ContainerData() {
             @Override
             public int get(int i) {
-                return attunementTicks;
+                if (i == 0) {
+                    return attunementTicks;
+                } else if (i == 1) {
+                    return getMaxAttunementTicks();
+                } else if (i == 2) {
+                    return isCompletedFirstAttunement() ? 1 : 0;
+                }
+                return 0;
             }
 
             @Override
             public void set(int i, int j) {
-                attunementTicks = j;
+                if (i == 0) {
+                    attunementTicks = j;
+                } else if (i == 1) {
+                    // ignored
+                } else if (i == 2) {
+                    // ignored
+                }
             }
 
             @Override
             public int getCount() {
-                return 1;
+                return 3;
             }
         };
     }
@@ -192,12 +207,13 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
 
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
-                return new WarpPlateContainer(i, WarpPlateBlockEntity.this, dataAccess, playerInventory);
+                WarpPlateBlockEntity.this.markReadyForAttunement();
+                return new WarpPlateContainer(i, playerInventory, getWaystone(), WarpPlateBlockEntity.this, dataAccess);
             }
 
             @Override
             public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                buf.writeBlockPos(worldPosition);
+                Waystone.write(buf, getWaystone());
             }
         };
     }
@@ -454,5 +470,10 @@ public class WarpPlateBlockEntity extends WaystoneBlockEntityBase implements Imp
             return false; //prevents hoppers to add items in an occupied center slot
         }
         return ImplementedContainer.super.canPlaceItem(index, stack);
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return Container.stillValidBlockEntity(this, player);
     }
 }

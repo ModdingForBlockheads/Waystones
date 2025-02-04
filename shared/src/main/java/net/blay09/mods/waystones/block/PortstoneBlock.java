@@ -138,7 +138,6 @@ public class PortstoneBlock extends WaystoneBlockBase {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
                     buf.writeByte(WarpMode.PORTSTONE_TO_WAYSTONE.ordinal());
-                    buf.writeBlockPos(pos);
                 }
             });
         }

@@ -1,22 +1,23 @@
 package net.blay09.mods.waystones.menu;
 
-import net.blay09.mods.waystones.block.entity.WarpPlateBlockEntity;
-import net.blay09.mods.waystones.tag.ModItemTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class WarpPlateAttunementSlot extends Slot {
-    private final WarpPlateBlockEntity warpPlate;
+import java.util.function.Supplier;
 
-    public WarpPlateAttunementSlot(WarpPlateBlockEntity container, int slot, int x, int y) {
+public class WarpPlateAttunementSlot extends Slot {
+    private final Supplier<Boolean> mayPickupFunc;
+
+    public WarpPlateAttunementSlot(Container container, int slot, int x, int y, Supplier<Boolean> mayPickupFunc) {
         super(container, slot, x, y);
-        warpPlate = container;
+        this.mayPickupFunc = mayPickupFunc;
     }
 
     @Override
     public boolean mayPickup(Player player) {
-        return warpPlate.isCompletedFirstAttunement() && super.mayPickup(player);
+        return mayPickupFunc.get() && super.mayPickup(player);
     }
 
     @Override

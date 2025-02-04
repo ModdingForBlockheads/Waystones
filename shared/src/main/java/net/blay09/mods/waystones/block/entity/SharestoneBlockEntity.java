@@ -53,7 +53,7 @@ public class SharestoneBlockEntity extends WaystoneBlockEntityBase {
                 ResourceLocation waystoneType = WaystoneTypes.getSharestone(block.getColor());
                 List<IWaystone> waystones = WaystoneManager.get(player.server).getWaystonesByType(waystoneType).collect(Collectors.toList());
 
-                buf.writeBlockPos(worldPosition);
+                Waystone.write(buf, getWaystone());
                 buf.writeShort(waystones.size());
                 for (IWaystone waystone : waystones) {
                     Waystone.write(buf, waystone);
