@@ -1,1 +1,1 @@
-- Fixed potential crash when opening waystone menus
+- Allow multiple modifiers in one line in warpRequirements config option to avoid repeating conditions
