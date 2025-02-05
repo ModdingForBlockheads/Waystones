@@ -14,18 +14,18 @@ import java.util.regex.Pattern;
 
 public class RequirementModifierParser {
 
-    public static Optional<ConfiguredRequirementModifier<?, ?>> parse(String input) {
+    public static List<? extends ConfiguredRequirementModifier<?, ?>> parse(String input) {
         try {
             final var conditionsStart = input.indexOf('[');
             final var conditionsEnd = input.indexOf(']');
             final var conditionsPart = conditionsStart != -1 && conditionsEnd != -1 ? input.substring(conditionsStart + 1, conditionsEnd) : "";
             final var functionPart = input.substring(conditionsEnd + 1).trim();
             final var conditions = parseConditions(conditionsPart);
-            final var requirement = parseRequirement(functionPart);
-            return Optional.of(new ConfiguredRequirementModifier<>(requirement, conditions));
+            final var requirements = parseRequirements(functionPart);
+            return requirements.stream().map(requirement -> new ConfiguredRequirementModifier<>(requirement, conditions)).toList();
         } catch (Exception e) {
             Waystones.logger.error("Could not parse warp requirement: {}", input, e);
-            return Optional.empty();
+            return List.of();
         }
     }
 
@@ -47,6 +47,16 @@ public class RequirementModifierParser {
     private static <P> ConfiguredCondition<P> parseCondition(ConditionResolver<P> conditionResolver, String args) {
         final var parameters = deserializeParameter(conditionResolver.getParameterType(), args);
         return new ConfiguredCondition<>(conditionResolver, parameters);
+    }
+
+    private static List<ConfiguredRequirement<?, ?>> parseRequirements(String functionPart) {
+        final var requirements = new ArrayList<ConfiguredRequirement<?, ?>>();
+        final var requirementPattern = Pattern.compile("(\\w+)\\((.*?)\\)");
+        final var requirementMatcher = requirementPattern.matcher(functionPart);
+        while (requirementMatcher.find()) {
+            requirements.add(parseRequirement(requirementMatcher.group(0)));
+        }
+        return requirements;
     }
 
     private static ConfiguredRequirement<?, ?> parseRequirement(String functionPart) {
