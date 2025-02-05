@@ -167,8 +167,9 @@ public class InternalMethodsImpl implements InternalMethods {
             }
 
             RequirementModifierParser.parse(modifier)
+                    .stream()
                     .filter(configuredModifier -> configuredModifier.requirement().modifier().isEnabled())
-                    .ifPresent(requirementsContext::apply);
+                    .forEach(requirementsContext::apply);
         }
 
         return requirementsContext.resolve();
